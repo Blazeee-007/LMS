@@ -2,25 +2,30 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 
-const steps = ["Personal Information", "Financial Details", "Educational Background", "Review"];
+const steps = ["Student Information", "Leave Details", "Emergency Contact", "Review"];
 
 export const ApplicationForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    income: "",
-    dependents: "",
-    school: "",
-    gpa: "",
+    studentName: "",
+    studentId: "",
+    course: "",
+    semester: "",
+    fromDate: "",
+    toDate: "",
+    reason: "",
+    emergencyContactName: "",
+    emergencyContactRelation: "",
+    emergencyContactPhone: "",
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -43,8 +48,8 @@ export const ApplicationForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
-      title: "Application Submitted",
-      description: "Your financial aid application has been received.",
+      title: "Leave Application Submitted",
+      description: "Your emergency leave request has been received.",
     });
   };
 
@@ -54,43 +59,41 @@ export const ApplicationForm = () => {
         return (
           <div className="space-y-4 animate-fadeIn">
             <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
+              <Label htmlFor="studentName">Full Name</Label>
               <Input
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
+                id="studentName"
+                name="studentName"
+                value={formData.studentName}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
+              <Label htmlFor="studentId">Student ID</Label>
               <Input
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
+                id="studentId"
+                name="studentId"
+                value={formData.studentId}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="course">Course</Label>
               <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
+                id="course"
+                name="course"
+                value={formData.course}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="semester">Semester</Label>
               <Input
-                id="phone"
-                name="phone"
-                type="tel"
-                value={formData.phone}
+                id="semester"
+                name="semester"
+                value={formData.semester}
                 onChange={handleInputChange}
                 required
               />
@@ -101,25 +104,37 @@ export const ApplicationForm = () => {
         return (
           <div className="space-y-4 animate-fadeIn">
             <div className="space-y-2">
-              <Label htmlFor="income">Annual Household Income</Label>
+              <Label htmlFor="fromDate">From Date</Label>
               <Input
-                id="income"
-                name="income"
-                type="number"
-                value={formData.income}
+                id="fromDate"
+                name="fromDate"
+                type="date"
+                value={formData.fromDate}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="dependents">Number of Dependents</Label>
+              <Label htmlFor="toDate">To Date</Label>
               <Input
-                id="dependents"
-                name="dependents"
-                type="number"
-                value={formData.dependents}
+                id="toDate"
+                name="toDate"
+                type="date"
+                value={formData.toDate}
                 onChange={handleInputChange}
                 required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="reason">Reason for Leave</Label>
+              <Textarea
+                id="reason"
+                name="reason"
+                value={formData.reason}
+                onChange={handleInputChange}
+                required
+                className="min-h-[100px]"
+                placeholder="Please provide detailed explanation for your emergency leave request..."
               />
             </div>
           </div>
@@ -128,25 +143,32 @@ export const ApplicationForm = () => {
         return (
           <div className="space-y-4 animate-fadeIn">
             <div className="space-y-2">
-              <Label htmlFor="school">Current/Previous School</Label>
+              <Label htmlFor="emergencyContactName">Emergency Contact Name</Label>
               <Input
-                id="school"
-                name="school"
-                value={formData.school}
+                id="emergencyContactName"
+                name="emergencyContactName"
+                value={formData.emergencyContactName}
                 onChange={handleInputChange}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="gpa">GPA</Label>
+              <Label htmlFor="emergencyContactRelation">Relationship</Label>
               <Input
-                id="gpa"
-                name="gpa"
-                type="number"
-                step="0.01"
-                min="0"
-                max="4"
-                value={formData.gpa}
+                id="emergencyContactRelation"
+                name="emergencyContactRelation"
+                value={formData.emergencyContactRelation}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="emergencyContactPhone">Emergency Contact Phone</Label>
+              <Input
+                id="emergencyContactPhone"
+                name="emergencyContactPhone"
+                type="tel"
+                value={formData.emergencyContactPhone}
                 onChange={handleInputChange}
                 required
               />
@@ -156,15 +178,17 @@ export const ApplicationForm = () => {
       case 3:
         return (
           <div className="space-y-4 animate-fadeIn">
-            <h3 className="font-semibold">Review Your Information</h3>
+            <h3 className="font-semibold">Review Your Application</h3>
             <div className="bg-secondary/50 p-4 rounded-lg space-y-2">
-              <p>Name: {formData.firstName} {formData.lastName}</p>
-              <p>Email: {formData.email}</p>
-              <p>Phone: {formData.phone}</p>
-              <p>Income: ${formData.income}</p>
-              <p>Dependents: {formData.dependents}</p>
-              <p>School: {formData.school}</p>
-              <p>GPA: {formData.gpa}</p>
+              <p>Name: {formData.studentName}</p>
+              <p>Student ID: {formData.studentId}</p>
+              <p>Course: {formData.course}</p>
+              <p>Semester: {formData.semester}</p>
+              <p>Leave Period: {formData.fromDate} to {formData.toDate}</p>
+              <p>Reason: {formData.reason}</p>
+              <p>Emergency Contact: {formData.emergencyContactName}</p>
+              <p>Relationship: {formData.emergencyContactRelation}</p>
+              <p>Contact Phone: {formData.emergencyContactPhone}</p>
             </div>
           </div>
         );
