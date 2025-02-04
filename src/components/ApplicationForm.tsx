@@ -153,14 +153,24 @@ export const ApplicationForm = () => {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="emergencyContactRelation">Relationship</Label>
-              <Input
-                id="emergencyContactRelation"
-                name="emergencyContactRelation"
-                value={formData.emergencyContactRelation}
-                onChange={handleInputChange}
-                required
-              />
+
+<div className="space-y-2">
+  <Label htmlFor="emergencyContactRelation">Relationship</Label>
+  <select
+    id="emergencyContactRelation"
+    name="emergencyContactRelation"
+    value={formData.emergencyContactRelation}
+    onChange={handleInputChange}
+    className="w-full border rounded-md p-2"
+    required
+  >
+    <option value="">Select Relationship</option>
+    <option value="father">Father</option>
+    <option value="mother">Mother</option>
+    <option value="guardian">Guardian</option>
+  </select>
+</div>
+
             </div>
             <div className="space-y-2">
               <Label htmlFor="emergencyContactPhone">Emergency Contact Phone</Label>
