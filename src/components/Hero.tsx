@@ -6,10 +6,10 @@ export const Hero = () => {
       <div className="container">
         <div className="max-w-3xl mx-auto text-center space-y-6">
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-            Your Path to Educational Success Starts Here
+            Student Emergency Leave Application Portal
           </h1>
           <p className="text-xl text-white/90">
-            Apply for financial aid easily and securely. We're here to help you achieve your educational goals.
+            Submit your emergency leave requests quickly and securely. We understand emergencies need prompt attention.
           </p>
           <div className="flex justify-center gap-4">
             <Button className="bg-accent hover:bg-accent/90 text-lg px-8">
