@@ -1,7 +1,9 @@
 import { Header } from "@/components/Header";
-import { ApplicationStatus } from "@/components/ApplicationStatus";
+import { ApplicationStatus, ApplicationProgress } from "@/components/ApplicationStatus";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+
+type StatusType = "pending" | "approved" | "rejected";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -10,7 +12,7 @@ const Dashboard = () => {
     {
       id: 1,
       date: "2024-02-20",
-      status: "approved",
+      status: "approved" as StatusType,
       reason: "Family Emergency",
       fromDate: "2024-02-21",
       toDate: "2024-02-23",
@@ -18,7 +20,7 @@ const Dashboard = () => {
     {
       id: 2,
       date: "2024-02-15",
-      status: "pending",
+      status: "pending" as StatusType,
       reason: "Medical Emergency",
       fromDate: "2024-02-16",
       toDate: "2024-02-18",
