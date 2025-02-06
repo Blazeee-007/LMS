@@ -32,7 +32,7 @@ export const Header = () => {
               <ClipboardList className="h-8 w-8 text-white animate-pulse" />
               <div className="text-white">
                 <h1 className="text-2xl font-bold tracking-tight">Student Leave Portal</h1>
-                <p className="text-sm opacity-90 font-medium">Emergency Leave Application System</p>
+                <p className="text-sm opacity-90 font-medium">Leave Application System</p>
               </div>
             </div>
           </div>
