@@ -4,8 +4,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const steps = ["Student Information", "Leave Details", "Emergency Contact", "Review"];
+
+const COURSE_OPTIONS = {
+  btech: {
+    name: "B.Tech",
+    branches: ["Computer Science", "Electronics", "Mechanical", "Civil"],
+    semesters: Array.from({ length: 8 }, (_, i) => ({
+      year: Math.floor(i / 2) + 1,
+      sem: (i % 2) + 1
+    }))
+  },
+  degree: {
+    name: "Degree",
+    branches: ["BCA", "BBA", "B.Com", "BSc"],
+    semesters: Array.from({ length: 6 }, (_, i) => ({
+      year: Math.floor(i / 2) + 1,
+      sem: (i % 2) + 1
+    }))
+  }
+};
 
 export const ApplicationForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -14,6 +34,7 @@ export const ApplicationForm = () => {
     studentName: "",
     studentId: "",
     course: "",
+    branch: "",
     semester: "",
     fromDate: "",
     toDate: "",
@@ -30,6 +51,14 @@ export const ApplicationForm = () => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === 'course' && { branch: '', semester: '' }),
     }));
   };
 
@@ -80,24 +109,50 @@ export const ApplicationForm = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="course">Course</Label>
-              <Input
-                id="course"
-                name="course"
-                value={formData.course}
-                onChange={handleInputChange}
-                required
-              />
+              <Select name="course" onValueChange={(value) => handleSelectChange('course', value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select course" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="btech">{COURSE_OPTIONS.btech.name}</SelectItem>
+                  <SelectItem value="degree">{COURSE_OPTIONS.degree.name}</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="semester">Semester</Label>
-              <Input
-                id="semester"
-                name="semester"
-                value={formData.semester}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
+            {formData.course && (
+              <div className="space-y-2">
+                <Label htmlFor="branch">Branch</Label>
+                <Select name="branch" onValueChange={(value) => handleSelectChange('branch', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select branch" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COURSE_OPTIONS[formData.course as keyof typeof COURSE_OPTIONS].branches.map((branch) => (
+                      <SelectItem key={branch} value={branch}>
+                        {branch}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            {formData.course && (
+              <div className="space-y-2">
+                <Label htmlFor="semester">Semester</Label>
+                <Select name="semester" onValueChange={(value) => handleSelectChange('semester', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select semester" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COURSE_OPTIONS[formData.course as keyof typeof COURSE_OPTIONS].semesters.map((sem) => (
+                      <SelectItem key={`${sem.year}-${sem.sem}`} value={`${sem.year}-${sem.sem}`}>
+                        {`${sem.year} Year - ${sem.sem} Semester`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
         );
       case 1:
@@ -189,6 +244,7 @@ export const ApplicationForm = () => {
               <p>Name: {formData.studentName}</p>
               <p>Student ID: {formData.studentId}</p>
               <p>Course: {formData.course}</p>
+              <p>Branch: {formData.branch}</p>
               <p>Semester: {formData.semester}</p>
               <p>Leave Period: {formData.fromDate} to {formData.toDate}</p>
               <p>Reason: {formData.reason}</p>
