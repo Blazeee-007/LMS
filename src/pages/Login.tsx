@@ -31,8 +31,6 @@ const Login = () => {
   };
 
   const handleGoogleSignIn = () => {
-    // This is a placeholder for Google sign-in functionality
-    // Will be implemented when connected to Supabase
     toast({
       title: "Google Sign In",
       description: "Please connect Supabase to enable Google Sign In",
@@ -40,20 +38,24 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#9b87f5] to-[#7E69AB]">
-      <div className="w-full max-w-md space-y-8 p-10 bg-white rounded-2xl shadow-2xl transform transition-all">
-        <div className="text-center space-y-2">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#E5DEFF] to-[#D3E4FD]">
+      <div className="w-full max-w-md space-y-8 p-10 bg-white/95 backdrop-blur-sm rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all hover:shadow-[0_8px_40px_rgb(0,0,0,0.16)] animate-fadeIn">
+        <div className="text-center space-y-3">
           <div className="flex justify-center">
-            <ClipboardList className="h-12 w-12 text-[#9b87f5]" />
+            <ClipboardList className="h-12 w-12 text-[#6E59A5] animate-pulse" />
           </div>
-          <h2 className="text-3xl font-bold text-[#1A1F2C]">Welcome Back</h2>
-          <p className="text-sm text-gray-600">Sign in to your student account</p>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-[#1A1F2C] to-[#6E59A5] bg-clip-text text-transparent">
+            Welcome Back
+          </h2>
+          <p className="text-sm text-[#8E9196] font-medium">
+            Sign in to your student account
+          </p>
         </div>
 
         <div className="space-y-6">
           <Button 
             onClick={handleGoogleSignIn}
-            className="w-full bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 flex items-center justify-center gap-2 py-6"
+            className="w-full bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 flex items-center justify-center gap-2 py-6 shadow-sm transition-all duration-200 hover:shadow-md"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -78,46 +80,48 @@ const Login = () => {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <Separator className="w-full" />
+              <Separator className="w-full bg-gray-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-2 text-gray-500">Or continue with</span>
+              <span className="bg-white px-2 text-[#8E9196] font-medium">
+                Or continue with email
+              </span>
             </div>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-4">
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <div className="relative group">
+                <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 transition-colors group-hover:text-[#6E59A5]" />
                 <Input
                   type="email"
                   placeholder="College Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 border-gray-300 focus:border-[#9b87f5] focus:ring-[#9b87f5]"
+                  className="pl-10 border-gray-200 focus:border-[#6E59A5] focus:ring-[#6E59A5] transition-all"
                   required
                 />
               </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <div className="relative group">
+                <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 transition-colors group-hover:text-[#6E59A5]" />
                 <Input
                   type="password"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 border-gray-300 focus:border-[#9b87f5] focus:ring-[#9b87f5]"
+                  className="pl-10 border-gray-200 focus:border-[#6E59A5] focus:ring-[#6E59A5] transition-all"
                   required
                 />
               </div>
             </div>
             <Button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-[#9b87f5] to-[#7E69AB] hover:opacity-90 transition-opacity"
+              className="w-full bg-gradient-to-r from-[#6E59A5] to-[#9b87f5] hover:opacity-90 transition-all duration-200 shadow-lg shadow-[#6E59A5]/20"
             >
               Sign in
             </Button>
             <div className="text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-[#8E9196]">
                 Demo credentials: student@college.edu / password
               </p>
             </div>
