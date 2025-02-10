@@ -11,7 +11,16 @@ const steps = ["Student Information", "Leave Details", "Emergency Contact", "Rev
 const COURSE_OPTIONS = {
   btech: {
     name: "B.Tech",
-    branches: ["Computer Science", "Electronics", "Mechanical", "Civil"],
+    branches: [
+      "Computer Science (CSE)",
+      "Electronics & Communication (ECE)",
+      "Electrical & Electronics (EEE)",
+      "Mechanical Engineering",
+      "Civil Engineering",
+      "Computer Science & Mathematics (CSM)",
+      "Computer Science & Design (CSD)",
+      "Information Technology (IT)"
+    ],
     semesters: Array.from({ length: 8 }, (_, i) => ({
       year: Math.floor(i / 2) + 1,
       sem: (i % 2) + 1
