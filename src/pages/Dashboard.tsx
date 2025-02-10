@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/Header";
 import { ApplicationStatus, ApplicationProgress } from "@/components/ApplicationStatus";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ const Dashboard = () => {
       id: 1,
       date: "2024-02-20",
       status: "approved" as StatusType,
+      title: "Three Days Leave",
       reason: "Family Emergency",
       fromDate: "2024-02-21",
       toDate: "2024-02-23",
@@ -27,6 +29,7 @@ const Dashboard = () => {
       id: 2,
       date: "2024-02-15",
       status: "pending" as StatusType,
+      title: "Medical Leave Request",
       reason: "Medical Leave",
       fromDate: "2024-02-16",
       toDate: "2024-02-18",
@@ -59,7 +62,8 @@ const Dashboard = () => {
             >
               <div className="flex justify-between items-start">
                 <div className="space-y-2">
-                  <h3 className="font-semibold">{application.reason}</h3>
+                  <h2 className="text-lg font-bold">{application.title}</h2>
+                  <h3 className="font-semibold text-gray-700">{application.reason}</h3>
                   <p className="text-sm text-gray-600">
                     {application.fromDate} to {application.toDate}
                   </p>

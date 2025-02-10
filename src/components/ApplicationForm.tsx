@@ -17,8 +17,8 @@ const COURSE_OPTIONS = {
       "Electrical & Electronics (EEE)",
       "Mechanical Engineering",
       "Civil Engineering",
-      "Computer Science & Mathematics (CSM)",
-      "Computer Science & Design (CSD)",
+      "Computer Science & AI/ML (CSE-AIML)",
+      "Computer Science & Data Science (CSE-DS)",
       "Information Technology (IT)"
     ],
     semesters: Array.from({ length: 8 }, (_, i) => ({
@@ -45,6 +45,7 @@ export const ApplicationForm = () => {
     course: "",
     branch: "",
     semester: "",
+    title: "",
     fromDate: "",
     toDate: "",
     reason: "",
@@ -52,6 +53,8 @@ export const ApplicationForm = () => {
     emergencyContactRelation: "",
     emergencyContactPhone: "",
   });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -61,6 +64,13 @@ export const ApplicationForm = () => {
       ...prev,
       [name]: value,
     }));
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   const handleSelectChange = (name: string, value: string) => {
@@ -69,10 +79,41 @@ export const ApplicationForm = () => {
       [name]: value,
       ...(name === 'course' && { branch: '', semester: '' }),
     }));
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const validateStep = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (currentStep === 0) {
+      if (!formData.studentName) newErrors.studentName = "Student name is required";
+      if (!formData.studentId) newErrors.studentId = "Student ID is required";
+      if (!formData.course) newErrors.course = "Course is required";
+      if (!formData.branch) newErrors.branch = "Branch is required";
+      if (!formData.semester) newErrors.semester = "Semester is required";
+    } else if (currentStep === 1) {
+      if (!formData.title) newErrors.title = "Title is required";
+      if (!formData.fromDate) newErrors.fromDate = "From date is required";
+      if (!formData.toDate) newErrors.toDate = "To date is required";
+      if (!formData.reason) newErrors.reason = "Reason is required";
+    } else if (currentStep === 2) {
+      if (!formData.emergencyContactName) newErrors.emergencyContactName = "Contact name is required";
+      if (!formData.emergencyContactRelation) newErrors.emergencyContactRelation = "Relation is required";
+      if (!formData.emergencyContactPhone) newErrors.emergencyContactPhone = "Contact phone is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
+    if (validateStep() && currentStep < steps.length - 1) {
       setCurrentStep((prev) => prev + 1);
     }
   };
@@ -85,10 +126,12 @@ export const ApplicationForm = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Leave Application Submitted",
-      description: "Your emergency leave request has been received.",
-    });
+    if (validateStep()) {
+      toast({
+        title: "Leave Application Submitted",
+        description: "Your emergency leave request has been received.",
+      });
+    }
   };
 
   const renderFormStep = () => {
@@ -103,8 +146,11 @@ export const ApplicationForm = () => {
                 name="studentName"
                 value={formData.studentName}
                 onChange={handleInputChange}
-                required
+                className={errors.studentName ? "border-red-500" : ""}
               />
+              {errors.studentName && (
+                <p className="text-sm text-red-500">{errors.studentName}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="studentId">Student ID</Label>
@@ -118,8 +164,11 @@ export const ApplicationForm = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="course">Course</Label>
-              <Select name="course" onValueChange={(value) => handleSelectChange('course', value)}>
-                <SelectTrigger>
+              <Select 
+                name="course" 
+                onValueChange={(value) => handleSelectChange('course', value)}
+              >
+                <SelectTrigger className={errors.course ? "border-red-500" : ""}>
                   <SelectValue placeholder="Select course" />
                 </SelectTrigger>
                 <SelectContent>
@@ -127,12 +176,18 @@ export const ApplicationForm = () => {
                   <SelectItem value="degree">{COURSE_OPTIONS.degree.name}</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.course && (
+                <p className="text-sm text-red-500">{errors.course}</p>
+              )}
             </div>
             {formData.course && (
               <div className="space-y-2">
                 <Label htmlFor="branch">Branch</Label>
-                <Select name="branch" onValueChange={(value) => handleSelectChange('branch', value)}>
-                  <SelectTrigger>
+                <Select 
+                  name="branch" 
+                  onValueChange={(value) => handleSelectChange('branch', value)}
+                >
+                  <SelectTrigger className={errors.branch ? "border-red-500" : ""}>
                     <SelectValue placeholder="Select branch" />
                   </SelectTrigger>
                   <SelectContent>
@@ -143,6 +198,9 @@ export const ApplicationForm = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.branch && (
+                  <p className="text-sm text-red-500">{errors.branch}</p>
+                )}
               </div>
             )}
             {formData.course && (
@@ -167,6 +225,20 @@ export const ApplicationForm = () => {
       case 1:
         return (
           <div className="space-y-4 animate-fadeIn">
+            <div className="space-y-2">
+              <Label htmlFor="title">Leave Title</Label>
+              <Input
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                placeholder="Enter a brief title for your leave"
+                className={errors.title ? "border-red-500" : ""}
+              />
+              {errors.title && (
+                <p className="text-sm text-red-500">{errors.title}</p>
+              )}
+            </div>
             <div className="space-y-2">
               <Label htmlFor="fromDate">From Date</Label>
               <Input
