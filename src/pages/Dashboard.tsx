@@ -4,7 +4,7 @@ import { ApplicationStatus, ApplicationProgress } from "@/components/Application
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { X, Calendar, FileText, AlertCircle } from "lucide-react";
+import { X, Calendar, FileText, AlertCircle, Users, CalendarDays } from "lucide-react";
 import { useState } from "react";
 import { 
   Dialog,
@@ -16,7 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { LeaveStatistics } from "@/components/LeaveStatistics";
 
-type StatusType = "pending" | "approved" | "rejected";
+type StatusType = "pending" | "approved" | "rejected" | "under_review" | "needs_info" | "cancelled";
 type LeaveType = "medical" | "personal" | "academic" | "emergency";
 
 interface Application {
@@ -81,6 +81,33 @@ const Dashboard = () => {
       branch: "Computer Science & AI/ML (CSE-AIML)",
       semester: "4 Year - 1 Semester"
     },
+    {
+      id: 4,
+      date: "2024-03-05",
+      status: "under_review",
+      title: "Hackathon Participation",
+      reason: "Participating in national level hackathon",
+      leaveType: "academic",
+      fromDate: "2024-03-10",
+      toDate: "2024-03-12",
+      course: "B.Tech",
+      branch: "Computer Science (CSE)",
+      semester: "3 Year - 2 Semester",
+      attachments: ["invitation_letter.pdf", "registration_confirmation.pdf"]
+    },
+    {
+      id: 5,
+      date: "2024-04-15",
+      status: "needs_info",
+      title: "Family Function",
+      reason: "Sister's marriage ceremony",
+      leaveType: "personal",
+      fromDate: "2024-04-20",
+      toDate: "2024-04-25",
+      course: "B.Tech",
+      branch: "Electronics & Communication (ECE)",
+      semester: "2 Year - 2 Semester"
+    },
   ];
 
   const handleCancelApplication = (id: number) => {
@@ -98,7 +125,7 @@ const Dashboard = () => {
   // Calculate leave statistics
   const totalLeaves = applications.length;
   const approvedLeaves = applications.filter(app => app.status === "approved").length;
-  const pendingLeaves = applications.filter(app => app.status === "pending").length;
+  const pendingLeaves = applications.filter(app => ["pending", "under_review", "needs_info"].includes(app.status)).length;
   const rejectedLeaves = applications.filter(app => app.status === "rejected").length;
 
   const getLeaveTypeColor = (type: LeaveType) => {
@@ -111,13 +138,153 @@ const Dashboard = () => {
     }
   };
 
+  // Get the next upcoming leave application
+  const upcomingLeave = applications
+    .filter(app => app.status === "approved" || app.status === "pending")
+    .sort((a, b) => new Date(a.fromDate).getTime() - new Date(b.fromDate).getTime())
+    .find(app => new Date(app.fromDate) > new Date());
+
+  // Get leave applications in the last 30 days
+  const recentLeaves = applications
+    .filter(app => {
+      const appDate = new Date(app.date);
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      return appDate >= thirtyDaysAgo;
+    });
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="container py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold">My Leave Applications</h1>
-          <Button onClick={() => navigate("/")}>New Application</Button>
+          <h1 className="text-2xl font-bold">Student Dashboard</h1>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate("/calendar")}>
+              <CalendarDays className="h-4 w-4 mr-2" />
+              Calendar
+            </Button>
+            <Button onClick={() => navigate("/")}>New Application</Button>
+          </div>
+        </div>
+
+        {/* Quick Access Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {upcomingLeave ? (
+              <div className="bg-white rounded-lg shadow-md p-4 space-y-2">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-semibold">Next Leave</h3>
+                    <p className="text-sm text-gray-500">Starting {upcomingLeave.fromDate}</p>
+                  </div>
+                  <ApplicationStatus status={upcomingLeave.status} />
+                </div>
+                <h4 className="font-medium">{upcomingLeave.title}</h4>
+                <div className="flex items-center gap-1 text-sm">
+                  <Calendar className="h-4 w-4 text-gray-500" />
+                  <span>{upcomingLeave.fromDate} to {upcomingLeave.toDate}</span>
+                </div>
+                <div className="pt-2 flex justify-end">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => handleViewDetails(upcomingLeave)}
+                  >
+                    View Details
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-white rounded-lg shadow-md p-4 space-y-2">
+                <h3 className="text-lg font-semibold">No Upcoming Leaves</h3>
+                <p className="text-gray-500">You don't have any upcoming leave scheduled.</p>
+                <div className="pt-2 flex justify-end">
+                  <Button onClick={() => navigate("/")}>Apply Now</Button>
+                </div>
+              </div>
+            )}
+            
+            <div className="bg-white rounded-lg shadow-md p-4 space-y-3">
+              <h3 className="text-lg font-semibold">Quick Actions</h3>
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  variant="outline" 
+                  className="flex flex-col h-auto py-3"
+                  onClick={() => navigate("/")}
+                >
+                  <span className="text-xl mb-1">+</span>
+                  <span className="text-sm">New Leave</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex flex-col h-auto py-3"
+                  onClick={() => navigate("/calendar")}
+                >
+                  <Calendar className="h-5 w-5 mb-1" />
+                  <span className="text-sm">Calendar</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex flex-col h-auto py-3"
+                  onClick={() => {}}
+                >
+                  <FileText className="h-5 w-5 mb-1" />
+                  <span className="text-sm">Templates</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="flex flex-col h-auto py-3"
+                  onClick={() => {}}
+                >
+                  <Users className="h-5 w-5 mb-1" />
+                  <span className="text-sm">Faculty</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-md p-4 space-y-3">
+            <h3 className="text-lg font-semibold">Leave Balance</h3>
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between text-sm">
+                  <span>Medical Leave</span>
+                  <span className="font-medium">3/10 days used</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                  <div className="bg-red-500 h-2.5 rounded-full" style={{ width: "30%" }}></div>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-sm">
+                  <span>Personal Leave</span>
+                  <span className="font-medium">2/5 days used</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                  <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: "40%" }}></div>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-sm">
+                  <span>Academic Leave</span>
+                  <span className="font-medium">1/7 days used</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                  <div className="bg-purple-500 h-2.5 rounded-full" style={{ width: "14%" }}></div>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between text-sm">
+                  <span>Emergency Leave</span>
+                  <span className="font-medium">0/3 days used</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                  <div className="bg-orange-500 h-2.5 rounded-full" style={{ width: "0%" }}></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Leave Statistics */}
@@ -128,69 +295,76 @@ const Dashboard = () => {
           rejected={rejectedLeaves} 
         />
 
-        <h2 className="text-xl font-semibold mt-8 mb-4">Application History</h2>
-        <div className="space-y-4">
-          {applications.map((application) => (
-            <div
-              key={application.id}
-              className="bg-white p-6 rounded-lg shadow-md space-y-4"
-            >
-              <div className="flex justify-between items-start">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-bold">{application.title}</h2>
-                    <Badge className={getLeaveTypeColor(application.leaveType)}>
-                      {application.leaveType.charAt(0).toUpperCase() + application.leaveType.slice(1)}
-                    </Badge>
-                  </div>
-                  <h3 className="font-semibold text-gray-700">{application.reason}</h3>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Calendar className="h-4 w-4" />
-                    <p>{application.fromDate} to {application.toDate}</p>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
-                    <p>Course: {application.course}</p>
-                    <p>Branch: {application.branch}</p>
-                    <p>Semester: {application.semester}</p>
-                  </div>
-                  
-                  {application.attachments && application.attachments.length > 0 && (
-                    <div className="flex items-center gap-1 text-sm text-blue-600">
-                      <FileText className="h-4 w-4" />
-                      <span>{application.attachments.length} attachment(s)</span>
+        <h2 className="text-xl font-semibold mt-8 mb-4">Recent Applications</h2>
+        {applications.length > 0 ? (
+          <div className="space-y-4">
+            {applications.map((application) => (
+              <div
+                key={application.id}
+                className="bg-white p-6 rounded-lg shadow-md space-y-4"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-lg font-bold">{application.title}</h2>
+                      <Badge className={getLeaveTypeColor(application.leaveType)}>
+                        {application.leaveType.charAt(0).toUpperCase() + application.leaveType.slice(1)}
+                      </Badge>
                     </div>
-                  )}
-                </div>
-                <div className="flex items-center space-x-4">
-                  <ApplicationStatus status={application.status} />
-                  <div className="flex gap-2">
-                    {application.status === "pending" && (
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleCancelApplication(application.id)}
-                      >
-                        <X className="h-4 w-4 mr-1" />
-                        Cancel
-                      </Button>
+                    <h3 className="font-semibold text-gray-700">{application.reason}</h3>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <Calendar className="h-4 w-4" />
+                      <p>{application.fromDate} to {application.toDate}</p>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
+                      <p>Course: {application.course}</p>
+                      <p>Branch: {application.branch}</p>
+                      <p>Semester: {application.semester}</p>
+                    </div>
+                    
+                    {application.attachments && application.attachments.length > 0 && (
+                      <div className="flex items-center gap-1 text-sm text-blue-600">
+                        <FileText className="h-4 w-4" />
+                        <span>{application.attachments.length} attachment(s)</span>
+                      </div>
                     )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleViewDetails(application)}
-                    >
-                      <FileText className="h-4 w-4 mr-1" />
-                      Details
-                    </Button>
+                  </div>
+                  <div className="flex items-center space-x-4">
+                    <ApplicationStatus status={application.status} />
+                    <div className="flex gap-2">
+                      {["pending", "under_review", "needs_info"].includes(application.status) && (
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleCancelApplication(application.id)}
+                        >
+                          <X className="h-4 w-4 mr-1" />
+                          Cancel
+                        </Button>
+                      )}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewDetails(application)}
+                      >
+                        <FileText className="h-4 w-4 mr-1" />
+                        Details
+                      </Button>
+                    </div>
                   </div>
                 </div>
+                <div className="pt-4 border-t">
+                  <ApplicationProgress status={application.status} />
+                </div>
               </div>
-              <div className="pt-4 border-t">
-                <ApplicationProgress status={application.status} />
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white p-6 rounded-lg shadow-md text-center">
+            <p className="text-gray-500">You haven't submitted any leave applications yet.</p>
+            <Button className="mt-4" onClick={() => navigate("/")}>Submit New Application</Button>
+          </div>
+        )}
 
         {/* Application Details Dialog */}
         <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
@@ -253,7 +427,7 @@ const Dashboard = () => {
                     </div>
                   )}
                   
-                  {selectedApplication.status === "pending" && (
+                  {["pending", "under_review", "needs_info"].includes(selectedApplication.status) && (
                     <div className="flex justify-end">
                       <Button
                         variant="destructive"

@@ -10,6 +10,8 @@ import { Footer } from "./components/Footer";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import CalendarView from "./pages/CalendarView";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
@@ -26,6 +28,8 @@ const App = () => (
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/calendar" element={<CalendarView />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/" element={<Index />} />
               <Route path="*" element={<NotFound />} />
