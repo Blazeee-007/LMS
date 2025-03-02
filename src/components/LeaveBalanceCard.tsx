@@ -50,7 +50,7 @@ export const LeaveBalanceCard = ({ balances, warningThreshold = 80 }: LeaveBalan
       </CardHeader>
       <CardContent className="space-y-4">
         {lowBalanceWarning && (
-          <Alert variant="warning" className="bg-amber-50 border-amber-200">
+          <Alert className="bg-amber-50 border-amber-200">
             <AlertCircle className="h-4 w-4 text-amber-600" />
             <AlertDescription className="text-amber-700 text-xs">
               Your {getTypeName(lowBalanceWarning.type)} is running low. {lowBalanceWarning.used} of {lowBalanceWarning.total} days used.
@@ -65,7 +65,7 @@ export const LeaveBalanceCard = ({ balances, warningThreshold = 80 }: LeaveBalan
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">{getTypeName(balance.type)}</span>
                   {((balance.used / balance.total) * 100) >= warningThreshold && (
-                    <Badge variant="outline" className="text-amber-600 border-amber-300 bg-amber-50 text-xs">
+                    <Badge variant="warning" className="text-xs">
                       Low Balance
                     </Badge>
                   )}
