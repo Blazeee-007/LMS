@@ -29,15 +29,15 @@ const Profile = () => {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-gray-700">Full Name</label>
-                      <p className="mt-1 text-gray-900 font-medium">John Doe</p>
+                      <p className="mt-1 text-gray-900 font-medium">Sai Sasank Vanapalli</p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-700">Student ID</label>
-                      <p className="mt-1 text-gray-900 font-medium">STU123456</p>
+                      <p className="mt-1 text-gray-900 font-medium">233B1a05C1</p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-700">Email</label>
-                      <p className="mt-1 text-gray-900 font-medium">john.doe@example.com</p>
+                      <p className="mt-1 text-gray-900 font-medium">saisasank@gmail.com</p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-700">Department</label>
@@ -47,7 +47,7 @@ const Profile = () => {
                       <label className="text-sm font-medium text-gray-700">Mobile Number</label>
                       <div className="flex items-center gap-2 mt-1">
                         <Phone className="h-4 w-4 text-primary" />
-                        <p className="text-gray-900 font-medium">+91 9876543210</p>
+                        <p className="text-gray-900 font-medium">+91 7989788852</p>
                       </div>
                     </div>
                   </div>
@@ -68,26 +68,26 @@ const Profile = () => {
                   <div className="space-y-4">
                     <div>
                       <label className="text-sm font-medium text-gray-700">Father's Name</label>
-                      <p className="mt-1 text-gray-900 font-medium">Robert Doe</p>
+                      <p className="mt-1 text-gray-900 font-medium">Srinivasu Vanapalli</p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-700">Father's Mobile</label>
                       <div className="flex items-center gap-2 mt-1">
                         <Phone className="h-4 w-4 text-primary" />
-                        <p className="text-gray-900 font-medium">+91 9876543211</p>
+                        <p className="text-gray-900 font-medium">+91 9908910423</p>
                       </div>
                     </div>
                   </div>
                   <div className="space-y-4">
                     <div>
                       <label className="text-sm font-medium text-gray-700">Mother's Name</label>
-                      <p className="mt-1 text-gray-900 font-medium">Sarah Doe</p>
+                      <p className="mt-1 text-gray-900 font-medium">Dhana Lakshmi Vanapalli</p>
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-700">Mother's Mobile</label>
                       <div className="flex items-center gap-2 mt-1">
                         <Phone className="h-4 w-4 text-primary" />
-                        <p className="text-gray-900 font-medium">+91 9876543212</p>
+                        <p className="text-gray-900 font-medium">+91 9398844240</p>
                       </div>
                     </div>
                   </div>
