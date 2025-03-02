@@ -14,6 +14,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import CalendarView from "./pages/CalendarView";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import LeaveBalance from "./pages/LeaveBalance";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/calendar" element={<CalendarView />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/leave-balance" element={<LeaveBalance />} />
               <Route path="/" element={<Index />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
