@@ -197,19 +197,19 @@ export const AcademicCalendar = () => {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <div>
-                            <div>{props.day.day}</div>
-                            {renderEventIndicator(props.day.date)}
+                            <div>{props.date.getDate()}</div>
+                            {renderEventIndicator(props.date)}
                           </div>
                         </TooltipTrigger>
                         <TooltipContent align="center" className="p-0">
                           {filteredEvents.filter(
-                            event => event.date.toDateString() === props.day.date.toDateString()
+                            event => event.date.toDateString() === props.date.toDateString()
                           ).length > 0 ? (
                             <div className="p-2 max-w-xs">
                               <p className="font-semibold">Events:</p>
                               <ul className="text-xs space-y-1 mt-1">
                                 {filteredEvents
-                                  .filter(event => event.date.toDateString() === props.day.date.toDateString())
+                                  .filter(event => event.date.toDateString() === props.date.toDateString())
                                   .map(event => (
                                     <li key={event.id} className="flex items-center gap-1">
                                       <div 
