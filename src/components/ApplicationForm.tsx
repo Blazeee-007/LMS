@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,8 +5,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertCircle, Upload, X, Bell } from "lucide-react";
+import { AlertCircle, Upload, X, Bell, Mail, MessageSquare, Phone } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useNotifications } from "@/hooks/use-notifications";
 
 const steps = ["Student Information", "Leave Details", "Supporting Documents", "Review"];
 
@@ -50,6 +51,7 @@ export const ApplicationForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { sendNotification } = useNotifications();
   
   const [formData, setFormData] = useState({
     studentName: "",
@@ -65,7 +67,9 @@ export const ApplicationForm = () => {
     emergencyContactName: "",
     emergencyContactRelation: "",
     emergencyContactPhone: "",
-    notificationType: "email",
+    email: "",
+    phone: "",
+    notificationMethods: [] as ('email' | 'push' | 'sms' | 'call')[],
   });
 
   const [documents, setDocuments] = useState<File[]>([]);
@@ -108,7 +112,6 @@ export const ApplicationForm = () => {
     if (e.target.files && e.target.files.length > 0) {
       const selectedFiles = Array.from(e.target.files);
       
-      // Check file size (limit to 5MB)
       const oversizedFiles = selectedFiles.filter(file => file.size > 5 * 1024 * 1024);
       if (oversizedFiles.length > 0) {
         setUploadError("Some files exceed the 5MB size limit");
@@ -140,7 +143,6 @@ export const ApplicationForm = () => {
       if (!formData.toDate) newErrors.toDate = "To date is required";
       if (!formData.reason) newErrors.reason = "Reason is required";
       
-      // Date validation
       if (formData.fromDate && formData.toDate) {
         const fromDate = new Date(formData.fromDate);
         const toDate = new Date(formData.toDate);
@@ -150,7 +152,6 @@ export const ApplicationForm = () => {
         }
       }
     } else if (currentStep === 2) {
-      // Check if documents are required based on leave type
       const selectedLeaveType = LEAVE_TYPES.find(type => type.id === formData.leaveType);
       if (selectedLeaveType?.requiresDocument && documents.length === 0) {
         setUploadError(`Supporting documents are required for ${selectedLeaveType.name}`);
@@ -161,7 +162,6 @@ export const ApplicationForm = () => {
       if (!formData.emergencyContactRelation) newErrors.emergencyContactRelation = "Relation is required";
       if (!formData.emergencyContactPhone) newErrors.emergencyContactPhone = "Contact phone is required";
       
-      // Phone validation
       if (formData.emergencyContactPhone && !/^\d{10}$/.test(formData.emergencyContactPhone)) {
         newErrors.emergencyContactPhone = "Please enter a valid 10-digit phone number";
       }
@@ -169,6 +169,22 @@ export const ApplicationForm = () => {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleNotificationMethodChange = (method: 'email' | 'push' | 'sms' | 'call', checked: boolean) => {
+    setFormData((prev) => {
+      if (checked) {
+        return {
+          ...prev,
+          notificationMethods: [...prev.notificationMethods, method]
+        };
+      } else {
+        return {
+          ...prev,
+          notificationMethods: prev.notificationMethods.filter(m => m !== method)
+        };
+      }
+    });
   };
 
   const handleNext = () => {
@@ -186,27 +202,21 @@ export const ApplicationForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateStep()) {
+      if (formData.notificationMethods.length > 0) {
+        sendNotification({
+          methods: formData.notificationMethods,
+          title: "Leave Application Submitted",
+          message: "Your leave request has been received. You will be notified of updates.",
+          recipient: formData.notificationMethods.includes('email') ? formData.email : 
+                    formData.notificationMethods.includes('sms') || formData.notificationMethods.includes('call') ? 
+                    formData.phone : undefined
+        });
+      }
+      
       toast({
         title: "Leave Application Submitted",
         description: "Your leave request has been received. You will be notified of updates.",
       });
-      
-      // Show notification for successful submission
-      if (Notification.permission === "granted") {
-        new Notification("Leave Application Submitted", {
-          body: "Your leave request has been received. You will be notified of updates.",
-          icon: "/favicon.ico"
-        });
-      } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-          if (permission === "granted") {
-            new Notification("Leave Application Submitted", {
-              body: "Your leave request has been received. You will be notified of updates.",
-              icon: "/favicon.ico"
-            });
-          }
-        });
-      }
     }
   };
 
@@ -305,6 +315,36 @@ export const ApplicationForm = () => {
                 )}
               </div>
             )}
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                placeholder="your.email@example.com"
+                className={errors.email ? "border-red-500" : ""}
+              />
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="10-digit phone number"
+                className={errors.phone ? "border-red-500" : ""}
+              />
+              {errors.phone && (
+                <p className="text-sm text-red-500">{errors.phone}</p>
+              )}
+            </div>
           </div>
         );
       case 1:
@@ -454,26 +494,93 @@ export const ApplicationForm = () => {
               )}
             </div>
             
-            <div className="space-y-2 mt-4">
-              <Label htmlFor="notificationType">Notification Preferences</Label>
-              <Select 
-                name="notificationType" 
-                defaultValue={formData.notificationType}
-                onValueChange={(value) => handleSelectChange('notificationType', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select notification preference" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="email">Email Only</SelectItem>
-                  <SelectItem value="push">Push Notifications</SelectItem>
-                  <SelectItem value="both">Both Email and Push</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="text-xs text-gray-500">
+            <div className="space-y-3 mt-6 border p-4 rounded-lg">
+              <h4 className="font-medium">Notification Preferences</h4>
+              <p className="text-sm text-muted-foreground">
                 <Bell className="h-3 w-3 inline mr-1" />
-                You will receive notifications about your application status
+                Choose how you would like to receive updates about your application
               </p>
+              
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="notification-email" 
+                    checked={formData.notificationMethods.includes('email')}
+                    onCheckedChange={(checked) => 
+                      handleNotificationMethodChange('email', checked as boolean)}
+                  />
+                  <Label htmlFor="notification-email" className="flex items-center">
+                    <Mail className="h-4 w-4 mr-2" />
+                    Email Notifications
+                  </Label>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="notification-push" 
+                    checked={formData.notificationMethods.includes('push')}
+                    onCheckedChange={(checked) => 
+                      handleNotificationMethodChange('push', checked as boolean)}
+                  />
+                  <Label htmlFor="notification-push" className="flex items-center">
+                    <Bell className="h-4 w-4 mr-2" />
+                    Push Notifications
+                  </Label>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="notification-sms" 
+                    checked={formData.notificationMethods.includes('sms')}
+                    onCheckedChange={(checked) => 
+                      handleNotificationMethodChange('sms', checked as boolean)}
+                  />
+                  <Label htmlFor="notification-sms" className="flex items-center">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    SMS Notifications
+                  </Label>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="notification-call" 
+                    checked={formData.notificationMethods.includes('call')}
+                    onCheckedChange={(checked) => 
+                      handleNotificationMethodChange('call', checked as boolean)}
+                  />
+                  <Label htmlFor="notification-call" className="flex items-center">
+                    <Phone className="h-4 w-4 mr-2" />
+                    Verification Call
+                  </Label>
+                </div>
+              </div>
+              
+              {(formData.notificationMethods.includes('sms') || 
+                formData.notificationMethods.includes('call')) && 
+                (!formData.phone || formData.phone.trim() === '') && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    Phone number is required for SMS notifications and verification calls
+                  </AlertDescription>
+                </Alert>
+              )}
+              
+              {formData.notificationMethods.includes('email') && 
+                (!formData.email || formData.email.trim() === '') && (
+                <Alert variant="destructive" className="mt-2">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    Email address is required for email notifications
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
           </div>
         );
@@ -589,11 +696,24 @@ export const ApplicationForm = () => {
                 </div>
                 
                 <div>
-                  <p className="text-sm font-medium">Notification Preference: </p>
+                  <p className="text-sm font-medium">Contact Information:</p>
                   <p className="text-sm">
-                    {formData.notificationType === "email" ? "Email Only" : 
-                     formData.notificationType === "push" ? "Push Notifications" : 
-                     "Both Email and Push"}
+                    {formData.email && `Email: ${formData.email}`}
+                    {formData.email && formData.phone && ", "}
+                    {formData.phone && `Phone: ${formData.phone}`}
+                  </p>
+                </div>
+                
+                <div>
+                  <p className="text-sm font-medium">Notification Preferences:</p>
+                  <p className="text-sm">
+                    {formData.notificationMethods.length > 0 
+                      ? formData.notificationMethods.map(method => 
+                          method === 'email' ? 'Email' : 
+                          method === 'push' ? 'Push' : 
+                          method === 'sms' ? 'SMS' : 'Call'
+                        ).join(', ')
+                      : 'None selected'}
                   </p>
                 </div>
               </div>
