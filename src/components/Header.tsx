@@ -1,5 +1,5 @@
 
-import { ClipboardList, LogOut, Home, ArrowLeft, UserRound } from "lucide-react";
+import { ClipboardList, LogOut, Home, ArrowLeft, UserRound, BarChart3 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -55,6 +55,16 @@ export const Header = () => {
                   onClick={() => navigate("/")}
                 >
                   New Application
+                </Button>
+              </li>
+              <li>
+                <Button
+                  variant="ghost"
+                  className="hover:bg-accent font-medium"
+                  onClick={() => navigate("/leave-balance")}
+                >
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Leave Balance
                 </Button>
               </li>
               <li>

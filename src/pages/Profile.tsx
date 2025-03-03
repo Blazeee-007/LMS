@@ -1,18 +1,31 @@
-
-import { Shield, UserRound, Lock, Phone, Users } from "lucide-react";
+import { Shield, UserRound, Lock, Phone, Users, BarChart3 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Header />
       <main className="container py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center gap-3 mb-6">
-            <UserRound className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold text-primary">Profile</h1>
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <UserRound className="h-8 w-8 text-primary" />
+              <h1 className="text-3xl font-bold text-primary">Profile</h1>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => navigate("/leave-balance")}>
+                <BarChart3 className="h-4 w-4 mr-2" />
+                Leave Balance
+              </Button>
+              <Button onClick={() => navigate("/dashboard")}>
+                Dashboard
+              </Button>
+            </div>
           </div>
           
           <div className="grid gap-6">

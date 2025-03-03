@@ -4,7 +4,7 @@ import { ApplicationStatus, ApplicationProgress } from "@/components/Application
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { X, Calendar, FileText, AlertCircle, Users, CalendarDays } from "lucide-react";
+import { X, Calendar, FileText, AlertCircle, Users, CalendarDays, BarChart3 } from "lucide-react";
 import { useState } from "react";
 import { 
   Dialog,
@@ -160,6 +160,10 @@ const Dashboard = () => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-2xl font-bold">Student Dashboard</h1>
           <div className="flex gap-2">
+            <Button variant="outline" onClick={() => navigate("/leave-balance")}>
+              <BarChart3 className="h-4 w-4 mr-2" />
+              Leave Balance
+            </Button>
             <Button variant="outline" onClick={() => navigate("/calendar")}>
               <CalendarDays className="h-4 w-4 mr-2" />
               Calendar
@@ -227,10 +231,10 @@ const Dashboard = () => {
                 <Button 
                   variant="outline" 
                   className="flex flex-col h-auto py-3"
-                  onClick={() => {}}
+                  onClick={() => navigate("/leave-balance")}
                 >
-                  <FileText className="h-5 w-5 mb-1" />
-                  <span className="text-sm">Templates</span>
+                  <BarChart3 className="h-5 w-5 mb-1" />
+                  <span className="text-sm">Leave Balance</span>
                 </Button>
                 <Button 
                   variant="outline" 
@@ -245,7 +249,17 @@ const Dashboard = () => {
           </div>
           
           <div className="bg-white rounded-lg shadow-md p-4 space-y-3">
-            <h3 className="text-lg font-semibold">Leave Balance</h3>
+            <h3 className="text-lg font-semibold flex items-center justify-between">
+              <span>Leave Balance</span>
+              <Button 
+                variant="link" 
+                size="sm" 
+                className="text-primary hover:underline p-0 h-auto"
+                onClick={() => navigate("/leave-balance")}
+              >
+                View Details
+              </Button>
+            </h3>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between text-sm">
