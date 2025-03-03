@@ -12,6 +12,7 @@ export const Header = () => {
   };
 
   const isHomePage = location.pathname === "/";
+  const isDashboardPage = location.pathname === "/dashboard";
   const isActive = (path: string) => location.pathname === path;
 
   return (
@@ -58,16 +59,18 @@ export const Header = () => {
                   New Application
                 </Button>
               </li>
-              <li>
-                <Button
-                  variant={isActive("/leave-balance") ? "default" : "ghost"}
-                  className={`hover:bg-accent ${isActive("/leave-balance") ? "" : "font-medium"}`}
-                  onClick={() => navigate("/leave-balance")}
-                >
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  Leave Balance
-                </Button>
-              </li>
+              {isDashboardPage && (
+                <li>
+                  <Button
+                    variant={isActive("/leave-balance") ? "default" : "ghost"}
+                    className={`hover:bg-accent ${isActive("/leave-balance") ? "" : "font-medium"}`}
+                    onClick={() => navigate("/leave-balance")}
+                  >
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    Leave Balance
+                  </Button>
+                </li>
+              )}
               <li>
                 <Button
                   variant={isActive("/profile") ? "default" : "ghost"}
