@@ -12,6 +12,7 @@ export const Header = () => {
   };
 
   const isHomePage = location.pathname === "/";
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -29,7 +30,7 @@ export const Header = () => {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             )}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
               <ClipboardList className="h-8 w-8 text-primary animate-pulse" />
               <div>
                 <h1 className="text-xl font-bold tracking-tight">Student Leave Portal</h1>
@@ -41,8 +42,8 @@ export const Header = () => {
             <ul className="flex space-x-6">
               <li>
                 <Button
-                  variant="ghost"
-                  className="hover:bg-accent font-medium"
+                  variant={isActive("/dashboard") ? "default" : "ghost"}
+                  className={`hover:bg-accent ${isActive("/dashboard") ? "" : "font-medium"}`}
                   onClick={() => navigate("/dashboard")}
                 >
                   Dashboard
@@ -50,8 +51,8 @@ export const Header = () => {
               </li>
               <li>
                 <Button
-                  variant="ghost"
-                  className="hover:bg-accent font-medium"
+                  variant={isActive("/") ? "default" : "ghost"}
+                  className={`hover:bg-accent ${isActive("/") ? "" : "font-medium"}`}
                   onClick={() => navigate("/")}
                 >
                   New Application
@@ -59,8 +60,8 @@ export const Header = () => {
               </li>
               <li>
                 <Button
-                  variant="ghost"
-                  className="hover:bg-accent font-medium"
+                  variant={isActive("/leave-balance") ? "default" : "ghost"}
+                  className={`hover:bg-accent ${isActive("/leave-balance") ? "" : "font-medium"}`}
                   onClick={() => navigate("/leave-balance")}
                 >
                   <BarChart3 className="h-4 w-4 mr-2" />
@@ -69,8 +70,8 @@ export const Header = () => {
               </li>
               <li>
                 <Button
-                  variant="ghost"
-                  className="hover:bg-accent font-medium"
+                  variant={isActive("/profile") ? "default" : "ghost"}
+                  className={`hover:bg-accent ${isActive("/profile") ? "" : "font-medium"}`}
                   onClick={() => navigate("/profile")}
                 >
                   <UserRound className="h-4 w-4 mr-2" />

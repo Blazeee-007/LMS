@@ -1,6 +1,7 @@
-import { Shield, UserRound, Lock, Phone, Users, BarChart3 } from "lucide-react";
+
+import { Shield, UserRound, Lock, Phone, Users, BarChart3, ClipboardList, FileClock } from "lucide-react";
 import { Header } from "@/components/Header";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 
@@ -127,6 +128,52 @@ const Profile = () => {
                   <div className="text-sm text-gray-600">
                     Last password change: 30 days ago
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-lg border-t-4 border-t-primary/40">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <ClipboardList className="h-5 w-5 text-primary" />
+                  <CardTitle>Quick Links</CardTitle>
+                </div>
+                <CardDescription>Access important features quickly</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <Button 
+                    variant="outline" 
+                    className="flex flex-col h-24 hover:bg-primary hover:text-white transition-colors"
+                    onClick={() => navigate("/")}
+                  >
+                    <ClipboardList className="h-6 w-6 mb-2" />
+                    <span>New Application</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="flex flex-col h-24 hover:bg-primary hover:text-white transition-colors"
+                    onClick={() => navigate("/dashboard")}
+                  >
+                    <FileClock className="h-6 w-6 mb-2" />
+                    <span>My Applications</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="flex flex-col h-24 hover:bg-primary hover:text-white transition-colors"
+                    onClick={() => navigate("/leave-balance")}
+                  >
+                    <BarChart3 className="h-6 w-6 mb-2" />
+                    <span>Leave Balance</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="flex flex-col h-24 hover:bg-primary hover:text-white transition-colors"
+                    onClick={() => navigate("/calendar")}
+                  >
+                    <Shield className="h-6 w-6 mb-2" />
+                    <span>Calendar View</span>
+                  </Button>
                 </div>
               </CardContent>
             </Card>
