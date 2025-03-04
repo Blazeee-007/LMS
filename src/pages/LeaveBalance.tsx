@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { LeaveBalanceCard } from "@/components/LeaveBalanceCard";
@@ -14,7 +13,6 @@ import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 
-// Define the proper type for leave balances
 type LeaveBalanceType = {
   type: "medical" | "personal" | "academic" | "emergency";
   used: number;
@@ -22,7 +20,6 @@ type LeaveBalanceType = {
   color: string;
 };
 
-// Mock data for leave balances with proper typing
 const studentLeaveBalances: LeaveBalanceType[] = [
   { type: "medical", used: 2, total: 10, color: "bg-blue-500" },
   { type: "personal", used: 3, total: 5, color: "bg-green-500" },
@@ -30,7 +27,6 @@ const studentLeaveBalances: LeaveBalanceType[] = [
   { type: "emergency", used: 0, total: 2, color: "bg-red-500" }
 ];
 
-// Define type for leave history entries
 type LeaveHistoryEntry = {
   id: string;
   type: "medical" | "personal" | "academic" | "emergency";
@@ -40,7 +36,6 @@ type LeaveHistoryEntry = {
   reason: string;
 };
 
-// Mock history data
 const leaveHistory: LeaveHistoryEntry[] = [
   { 
     id: "LV-2023-001", 
@@ -92,7 +87,6 @@ const leaveHistory: LeaveHistoryEntry[] = [
   }
 ];
 
-// Phase 4 - Mock upcoming leave data
 const upcomingLeaves: LeaveHistoryEntry[] = [
   { 
     id: "LV-2024-004", 
@@ -112,7 +106,6 @@ const upcomingLeaves: LeaveHistoryEntry[] = [
   }
 ];
 
-// Phase 5 - Mock stats data
 const leaveStats = {
   totalUsed: 6,
   totalAvailable: 14,
@@ -120,7 +113,6 @@ const leaveStats = {
   mostUsedType: "personal"
 };
 
-// Monthly leave distribution data
 const monthlyLeaveData = [
   { name: 'Jan', value: 1 },
   { name: 'Feb', value: 2 },
@@ -142,7 +134,6 @@ const LeaveBalance = () => {
   const { toast } = useToast();
   
   useEffect(() => {
-    // Simulate loading data
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000);
@@ -212,7 +203,7 @@ const LeaveBalance = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-mobile-footer">
       <Header />
       
       <main className="container mx-auto py-8 px-4 animate-fade-in">
@@ -388,7 +379,6 @@ const LeaveBalance = () => {
             </Card>
           </TabsContent>
           
-          {/* Enhanced Phase 4 - Upcoming Tab */}
           <TabsContent value="upcoming" className="animate-fadeIn">
             <Card className="hover:shadow-md transition-shadow">
               <CardHeader>
@@ -476,7 +466,6 @@ const LeaveBalance = () => {
             </Card>
           </TabsContent>
           
-          {/* Enhanced Phase 5 - Stats Tab */}
           <TabsContent value="stats" className="animate-fadeIn">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card className="hover:shadow-md transition-shadow">
