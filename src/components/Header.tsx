@@ -86,7 +86,7 @@ export const Header = () => {
                           {notification.message}
                         </span>
                         {!notification.read && (
-                          <Badge variant="primary" className="ml-2">New</Badge>
+                          <Badge variant="default" className="ml-2">New</Badge>
                         )}
                       </div>
                       <span className="text-xs text-muted-foreground">Just now</span>
