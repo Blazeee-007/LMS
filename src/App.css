@@ -1,4 +1,3 @@
-
 #root {
   max-width: 100%;
   margin: 0 auto;
@@ -165,4 +164,49 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #666;
   }
+}
+
+/* BackToTop Button animation */
+.back-to-top-btn {
+  transition: all 0.3s ease;
+}
+
+.back-to-top-btn:hover {
+  transform: translateY(-5px);
+}
+
+/* Notification animations */
+.notification-badge {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+  }
+  70% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0.95);
+  }
+}
+
+/* Search sheet animations */
+.search-sheet-enter {
+  transform: translateY(100%);
+}
+
+.search-sheet-enter-active {
+  transform: translateY(0);
+  transition: transform 300ms;
+}
+
+.search-sheet-exit {
+  transform: translateY(0);
+}
+
+.search-sheet-exit-active {
+  transform: translateY(100%);
+  transition: transform 300ms;
 }

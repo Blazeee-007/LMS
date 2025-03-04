@@ -6,6 +6,7 @@ import { FAQ } from "@/components/FAQ";
 import { Testimonials } from "@/components/Testimonials";
 import { ContactSupport } from "@/components/ContactSupport";
 import { MobileFooter } from "@/components/MobileFooter";
+import { BackToTop } from "@/components/BackToTop";
 import { useEffect } from "react";
 
 const Index = () => {
@@ -46,6 +47,7 @@ const Index = () => {
       <FAQ />
       <ContactSupport />
       <MobileFooter />
+      <BackToTop />
     </div>
   );
 };

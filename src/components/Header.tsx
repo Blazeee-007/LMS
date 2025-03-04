@@ -1,236 +1,138 @@
 
-import { ClipboardList, LogOut, Home, ArrowLeft, UserRound, BarChart3, Menu, X, Bell } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { UserCircle, Bell } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const Header = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(3); // Example notification count
+  const [notifications, setNotifications] = useState([
+    { id: 1, message: "Your leave request has been approved", read: false },
+    { id: 2, message: "New announcement from administration", read: false },
+    { id: 3, message: "Reminder: Upload documents for medical leave", read: true },
+  ]);
 
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth >= 768) {
-        setIsMobileMenuOpen(false);
-      }
-    };
+  const unreadCount = notifications.filter(n => !n.read).length;
 
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
-
-  // Close mobile menu when navigating
-  useEffect(() => {
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
-
-  const handleLogout = () => {
-    navigate("/login");
+  const markAsRead = (id: number) => {
+    setNotifications(notifications.map(notification => 
+      notification.id === id ? { ...notification, read: true } : notification
+    ));
   };
 
-  const isHomePage = location.pathname === "/";
-  const isDashboardPage = location.pathname === "/dashboard";
-  const isActive = (path: string) => location.pathname === path;
-
-  const navItems = [
-    {
-      title: "Dashboard",
-      path: "/dashboard",
-      icon: <Home className="h-4 w-4 mr-2" />,
-      show: true
-    },
-    {
-      title: "New Application",
-      path: "/",
-      icon: <ClipboardList className="h-4 w-4 mr-2" />,
-      show: true
-    },
-    {
-      title: "Leave Balance",
-      path: "/leave-balance",
-      icon: <BarChart3 className="h-4 w-4 mr-2" />,
-      show: isDashboardPage
-    },
-    {
-      title: "Profile",
-      path: "/profile",
-      icon: <UserRound className="h-4 w-4 mr-2" />,
-      show: true
-    }
-  ];
-
-  const filteredNavItems = navItems.filter(item => item.show);
-
-  const handleNotificationClick = () => {
-    // In a real app, this would open notifications and clear the badge
-    setNotificationCount(0);
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(notification => ({ ...notification, read: true })));
   };
-
+  
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
-      <div className="container px-4 md:px-6">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-4">
-            {!isHomePage && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:bg-accent"
-                onClick={() => navigate("/")}
-                title="Back to Home"
-              >
-                <ArrowLeft className="h-5 w-5" />
+    <header className="sticky top-0 z-40 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <div className="container flex h-16 items-center justify-between py-4">
+        <div className="flex items-center gap-4">
+          <Link to="/" className="flex items-center gap-2">
+            <img src="/placeholder.svg" alt="Logo" className="h-8 w-8" />
+            <span className="text-xl font-bold tracking-tight">LeaveMS</span>
+          </Link>
+        </div>
+        <nav className="hidden md:flex items-center gap-6">
+          <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
+            Home
+          </Link>
+          <Link to="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
+            Dashboard
+          </Link>
+          <Link to="/calendar" className="text-sm font-medium hover:text-primary transition-colors">
+            Calendar
+          </Link>
+          <Link to="/leave-balance" className="text-sm font-medium hover:text-primary transition-colors">
+            Leave Balance
+          </Link>
+        </nav>
+        <div className="flex items-center gap-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" className="relative">
+                <Bell className="h-5 w-5" />
+                {unreadCount > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center" variant="destructive">
+                    {unreadCount}
+                  </Badge>
+                )}
               </Button>
-            )}
-            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
-              <ClipboardList className="h-8 w-8 text-primary" />
-              <div>
-                <h1 className="text-lg md:text-xl font-bold tracking-tight">Student Leave Portal</h1>
-                <p className="text-xs md:text-sm text-muted-foreground">Leave Application System</p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-4">
-            <ul className="flex space-x-2">
-              {filteredNavItems.map((item) => (
-                <li key={item.path}>
-                  <Button
-                    variant={isActive(item.path) ? "default" : "ghost"}
-                    className={`hover:bg-accent flex items-center ${isActive(item.path) ? "" : "font-medium"} transition-all duration-200`}
-                    onClick={() => navigate(item.path)}
-                  >
-                    {item.icon}
-                    {item.title}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-80">
+              <DropdownMenuLabel className="flex justify-between items-center">
+                <span>Notifications</span>
+                {unreadCount > 0 && (
+                  <Button variant="ghost" size="sm" onClick={markAllAsRead} className="text-xs">
+                    Mark all as read
                   </Button>
-                </li>
-              ))}
-            </ul>
-            
-            {/* Notification Button */}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="relative mr-2"
-                    onClick={handleNotificationClick}
-                  >
-                    <Bell className="h-5 w-5" />
-                    {notificationCount > 0 && (
-                      <Badge className="absolute -top-1 -right-1 px-1.5 py-0.5 min-w-[20px] h-5 bg-accent text-accent-foreground">
-                        {notificationCount}
-                      </Badge>
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Notifications</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            
-            <Button
-              variant="secondary"
-              className="flex items-center gap-2 hover:bg-accent transition-colors ml-2"
-              onClick={handleLogout}
-            >
-              <LogOut className="h-4 w-4" />
-              Logout
-            </Button>
-          </nav>
-          
-          {/* Mobile Menu Button with Notification Badge */}
-          <div className="flex items-center md:hidden">
-            {/* Mobile Notification Button */}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="relative mr-2"
-                    onClick={handleNotificationClick}
-                  >
-                    <Bell className="h-5 w-5" />
-                    {notificationCount > 0 && (
-                      <Badge className="absolute -top-1 -right-1 px-1.5 py-0.5 min-w-[20px] h-5 bg-accent text-accent-foreground">
-                        {notificationCount}
-                      </Badge>
-                    )}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Notifications</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle Menu"
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
+                )}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {notifications.length > 0 ? (
+                notifications.map((notification) => (
+                  <DropdownMenuItem key={notification.id} className="cursor-pointer p-3" onClick={() => markAsRead(notification.id)}>
+                    <div className="flex flex-col gap-1 w-full">
+                      <div className="flex justify-between items-center">
+                        <span className={`font-medium ${notification.read ? '' : 'text-primary'}`}>
+                          {notification.message}
+                        </span>
+                        {!notification.read && (
+                          <Badge variant="primary" className="ml-2">New</Badge>
+                        )}
+                      </div>
+                      <span className="text-xs text-muted-foreground">Just now</span>
+                    </div>
+                  </DropdownMenuItem>
+                ))
               ) : (
-                <Menu className="h-6 w-6" />
+                <div className="p-3 text-center text-muted-foreground">
+                  No notifications
+                </div>
               )}
-            </Button>
-          </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="cursor-pointer justify-center" asChild>
+                <Link to="/notifications" className="w-full text-center text-sm font-medium">
+                  View all notifications
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <UserCircle className="h-6 w-6" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/profile">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/dashboard">Dashboard</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/settings">Settings</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Link to="/login">Logout</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
-      
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden border-t bg-background"
-          >
-            <div className="container px-4 py-4">
-              <ul className="flex flex-col space-y-3">
-                {filteredNavItems.map((item) => (
-                  <li key={item.path} className="w-full">
-                    <Button
-                      variant={isActive(item.path) ? "default" : "ghost"}
-                      className={`w-full justify-start hover:bg-accent transition-all duration-200 ${isActive(item.path) ? "" : "font-medium"}`}
-                      onClick={() => navigate(item.path)}
-                    >
-                      {item.icon}
-                      {item.title}
-                    </Button>
-                  </li>
-                ))}
-                <li className="pt-2 border-t">
-                  <Button
-                    variant="secondary"
-                    className="w-full justify-start flex items-center gap-2 hover:bg-accent transition-colors"
-                    onClick={handleLogout}
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Logout
-                  </Button>
-                </li>
-              </ul>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 };

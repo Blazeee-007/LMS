@@ -33,6 +33,9 @@ const App = () => (
               <Route path="/calendar" element={<CalendarView />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/leave-balance" element={<LeaveBalance />} />
+              <Route path="/notifications" element={<Dashboard />} /> {/* Notifications will use Dashboard for now */}
+              <Route path="/settings" element={<Profile />} /> {/* Settings will use Profile for now */}
+              <Route path="/application" element={<Index />} /> {/* Direct to application form */}
               <Route path="/" element={<Index />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
