@@ -1,15 +1,18 @@
 
-import { ClipboardList, LogOut, Home, ArrowLeft, UserRound, BarChart3, Menu, X } from "lucide-react";
+import { ClipboardList, LogOut, Home, ArrowLeft, UserRound, BarChart3, Menu, X, Bell } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(3); // Example notification count
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -66,8 +69,13 @@ export const Header = () => {
 
   const filteredNavItems = navItems.filter(item => item.show);
 
+  const handleNotificationClick = () => {
+    // In a real app, this would open notifications and clear the badge
+    setNotificationCount(0);
+  };
+
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
       <div className="container px-4 md:px-6">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-4">
@@ -83,7 +91,7 @@ export const Header = () => {
               </Button>
             )}
             <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate("/")}>
-              <ClipboardList className="h-8 w-8 text-primary animate-pulse" />
+              <ClipboardList className="h-8 w-8 text-primary" />
               <div>
                 <h1 className="text-lg md:text-xl font-bold tracking-tight">Student Leave Portal</h1>
                 <p className="text-xs md:text-sm text-muted-foreground">Leave Application System</p>
@@ -98,7 +106,7 @@ export const Header = () => {
                 <li key={item.path}>
                   <Button
                     variant={isActive(item.path) ? "default" : "ghost"}
-                    className={`hover:bg-accent flex items-center ${isActive(item.path) ? "" : "font-medium"}`}
+                    className={`hover:bg-accent flex items-center ${isActive(item.path) ? "" : "font-medium"} transition-all duration-200`}
                     onClick={() => navigate(item.path)}
                   >
                     {item.icon}
@@ -107,6 +115,31 @@ export const Header = () => {
                 </li>
               ))}
             </ul>
+            
+            {/* Notification Button */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="relative mr-2"
+                    onClick={handleNotificationClick}
+                  >
+                    <Bell className="h-5 w-5" />
+                    {notificationCount > 0 && (
+                      <Badge className="absolute -top-1 -right-1 px-1.5 py-0.5 min-w-[20px] h-5 bg-accent text-accent-foreground">
+                        {notificationCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Notifications</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
             <Button
               variant="secondary"
               className="flex items-center gap-2 hover:bg-accent transition-colors ml-2"
@@ -117,20 +150,45 @@ export const Header = () => {
             </Button>
           </nav>
           
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle Menu"
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </Button>
+          {/* Mobile Menu Button with Notification Badge */}
+          <div className="flex items-center md:hidden">
+            {/* Mobile Notification Button */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="relative mr-2"
+                    onClick={handleNotificationClick}
+                  >
+                    <Bell className="h-5 w-5" />
+                    {notificationCount > 0 && (
+                      <Badge className="absolute -top-1 -right-1 px-1.5 py-0.5 min-w-[20px] h-5 bg-accent text-accent-foreground">
+                        {notificationCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Notifications</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Toggle Menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </Button>
+          </div>
         </div>
       </div>
       
@@ -150,7 +208,7 @@ export const Header = () => {
                   <li key={item.path} className="w-full">
                     <Button
                       variant={isActive(item.path) ? "default" : "ghost"}
-                      className={`w-full justify-start hover:bg-accent ${isActive(item.path) ? "" : "font-medium"}`}
+                      className={`w-full justify-start hover:bg-accent transition-all duration-200 ${isActive(item.path) ? "" : "font-medium"}`}
                       onClick={() => navigate(item.path)}
                     >
                       {item.icon}
