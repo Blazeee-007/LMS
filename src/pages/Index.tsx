@@ -1,9 +1,7 @@
-
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { ApplicationForm } from "@/components/ApplicationForm";
 import { FAQ } from "@/components/FAQ";
-import { Testimonials } from "@/components/Testimonials";
 import { ContactSupport } from "@/components/ContactSupport";
 import { MobileFooter } from "@/components/MobileFooter";
 import { BackToTop } from "@/components/BackToTop";
@@ -40,7 +38,6 @@ const Index = () => {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-mobile-footer">
       <Header />
       <Hero />
-      <Testimonials />
       <main className="container py-12" id="application-form">
         <ApplicationForm />
       </main>
