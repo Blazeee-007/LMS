@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/Header";
 import { ApplicationStatus, ApplicationProgress } from "@/components/ApplicationStatus";
 import { Button } from "@/components/ui/button";
@@ -41,6 +40,7 @@ import { format, isAfter, isBefore, isEqual, parseISO } from "date-fns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/DateRangePicker";
+import { DateRange } from "react-day-picker";
 
 type StatusType = "pending" | "approved" | "rejected" | "under_review" | "needs_info" | "cancelled";
 type LeaveType = "medical" | "personal" | "academic" | "emergency";
@@ -69,7 +69,7 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const [typeFilter, setTypeFilter] = useState<string>("");
-  const [dateRange, setDateRange] = useState<{from: Date | undefined, to: Date | undefined}>({from: undefined, to: undefined});
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [activeTab, setActiveTab] = useState("all");
 
   const applications: Application[] = [
@@ -142,7 +142,6 @@ const Dashboard = () => {
     },
   ];
 
-  // Filter applications based on search, status, type and date range
   const filteredApplications = applications.filter(app => {
     const matchesSearch = 
       app.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -154,11 +153,10 @@ const Dashboard = () => {
     const matchesType = typeFilter === "" || app.leaveType === typeFilter;
     
     let matchesDate = true;
-    if (dateRange.from && dateRange.to) {
+    if (dateRange?.from && dateRange?.to) {
       const appStartDate = parseISO(app.fromDate);
       const appEndDate = parseISO(app.toDate);
       
-      // Check if application date range overlaps with filter date range
       matchesDate = 
         (isEqual(appStartDate, dateRange.from) || isAfter(appStartDate, dateRange.from)) && 
         (isEqual(appEndDate, dateRange.to) || isBefore(appEndDate, dateRange.to));
@@ -167,7 +165,6 @@ const Dashboard = () => {
     return matchesSearch && matchesStatus && matchesType && matchesDate;
   });
 
-  // Filter applications based on active tab
   const tabFilteredApplications = activeTab === "all" 
     ? filteredApplications 
     : activeTab === "upcoming"
@@ -186,7 +183,6 @@ const Dashboard = () => {
   const handleCancelApplication = (id: number) => {
     setIsLoading(true);
     
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
       toast({
@@ -204,7 +200,6 @@ const Dashboard = () => {
   const handleExportApplications = () => {
     setIsLoading(true);
     
-    // Simulate export process
     setTimeout(() => {
       setIsLoading(false);
       toast({
@@ -222,10 +217,9 @@ const Dashboard = () => {
     setSearchTerm("");
     setStatusFilter("");
     setTypeFilter("");
-    setDateRange({from: undefined, to: undefined});
+    setDateRange(undefined);
   };
 
-  // Calculate leave statistics
   const totalLeaves = applications.length;
   const approvedLeaves = applications.filter(app => app.status === "approved").length;
   const pendingLeaves = applications.filter(app => ["pending", "under_review", "needs_info"].includes(app.status)).length;
@@ -241,13 +235,11 @@ const Dashboard = () => {
     }
   };
 
-  // Get the next upcoming leave application
   const upcomingLeave = applications
     .filter(app => app.status === "approved" || app.status === "pending")
     .sort((a, b) => new Date(a.fromDate).getTime() - new Date(b.fromDate).getTime())
     .find(app => new Date(app.fromDate) > new Date());
 
-  // Get leave applications in the last 30 days
   const recentLeaves = applications
     .filter(app => {
       const appDate = new Date(app.date);
@@ -275,7 +267,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Quick Access Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {upcomingLeave ? (
@@ -404,7 +395,6 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Leave Statistics */}
         <LeaveStatistics 
           total={totalLeaves} 
           approved={approvedLeaves} 
@@ -412,7 +402,6 @@ const Dashboard = () => {
           rejected={rejectedLeaves} 
         />
 
-        {/* Calendar Preview */}
         <div className="mt-8 mb-6">
           <Card>
             <CardHeader className="pb-3">
@@ -433,7 +422,6 @@ const Dashboard = () => {
           </Card>
         </div>
 
-        {/* Search and Filter */}
         <div className="bg-white p-4 rounded-lg shadow-md mb-6">
           <div className="flex flex-col md:flex-row gap-4 mb-4">
             <div className="flex-1">
@@ -608,7 +596,6 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Application Details Dialog */}
         <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
           <DialogContent className="max-w-2xl">
             {selectedApplication && (
