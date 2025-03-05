@@ -41,6 +41,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/DateRangePicker";
 import { DateRange } from "react-day-picker";
+import { UserWelcomeCard } from "@/components/UserWelcomeCard";
+import { LeaveBalanceCard } from "@/components/LeaveBalanceCard";
 
 type StatusType = "pending" | "approved" | "rejected" | "under_review" | "needs_info" | "cancelled";
 type LeaveType = "medical" | "personal" | "academic" | "emergency";
@@ -71,6 +73,16 @@ const Dashboard = () => {
   const [typeFilter, setTypeFilter] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [activeTab, setActiveTab] = useState("all");
+
+  const userData = {
+    name: "Sai Sasank Vanapalli",
+    leaveBalances: [
+      { type: "medical", used: 3, total: 10, color: "bg-red-500" },
+      { type: "personal", used: 2, total: 5, color: "bg-blue-500" },
+      { type: "academic", used: 1, total: 7, color: "bg-purple-500" },
+      { type: "emergency", used: 0, total: 3, color: "bg-orange-500" }
+    ]
+  };
 
   const applications: Application[] = [
     {
@@ -235,10 +247,14 @@ const Dashboard = () => {
     }
   };
 
-  const upcomingLeave = applications
-    .filter(app => app.status === "approved" || app.status === "pending")
-    .sort((a, b) => new Date(a.fromDate).getTime() - new Date(b.fromDate).getTime())
-    .find(app => new Date(app.fromDate) > new Date());
+  const upcomingLeaves = applications
+    .filter(app => 
+      (app.status === "approved" || app.status === "pending") && 
+      isAfter(parseISO(app.fromDate), new Date())
+    )
+    .sort((a, b) => new Date(a.fromDate).getTime() - new Date(b.fromDate).getTime());
+
+  const upcomingLeave = upcomingLeaves.length > 0 ? upcomingLeaves[0] : null;
 
   const recentLeaves = applications
     .filter(app => {
@@ -252,312 +268,403 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <main className="container py-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <h1 className="text-2xl font-bold">Student Dashboard</h1>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={() => navigate("/leave-balance")}>
-              <BarChart3 className="h-4 w-4 mr-2" />
-              Leave Balance
-            </Button>
-            <Button variant="outline" onClick={() => navigate("/calendar")}>
-              <CalendarDays className="h-4 w-4 mr-2" />
-              Calendar
-            </Button>
-            <Button onClick={() => navigate("/")}>New Application</Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="col-span-1 md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {upcomingLeave ? (
-              <div className="bg-white rounded-lg shadow-md p-4 space-y-2">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-lg font-semibold">Next Leave</h3>
-                    <p className="text-sm text-gray-500">Starting {format(parseISO(upcomingLeave.fromDate), 'PPP')}</p>
-                  </div>
-                  <ApplicationStatus status={upcomingLeave.status} />
-                </div>
-                <h4 className="font-medium">{upcomingLeave.title}</h4>
-                <div className="flex items-center gap-1 text-sm">
-                  <Calendar className="h-4 w-4 text-gray-500" />
-                  <span>{format(parseISO(upcomingLeave.fromDate), 'PPP')} to {format(parseISO(upcomingLeave.toDate), 'PPP')}</span>
-                </div>
-                <div className="pt-2 flex justify-end">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleViewDetails(upcomingLeave)}
-                  >
-                    View Details
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="bg-white rounded-lg shadow-md p-4 space-y-2">
-                <h3 className="text-lg font-semibold">No Upcoming Leaves</h3>
-                <p className="text-gray-500">You don't have any upcoming leave scheduled.</p>
-                <div className="pt-2 flex justify-end">
-                  <Button onClick={() => navigate("/")}>Apply Now</Button>
-                </div>
-              </div>
-            )}
-            
-            <div className="bg-white rounded-lg shadow-md p-4 space-y-3">
-              <h3 className="text-lg font-semibold">Quick Actions</h3>
-              <div className="grid grid-cols-2 gap-2">
-                <Button 
-                  variant="outline" 
-                  className="flex flex-col h-auto py-3"
-                  onClick={() => navigate("/")}
-                >
-                  <span className="text-xl mb-1">+</span>
-                  <span className="text-sm">New Leave</span>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="flex flex-col h-auto py-3"
-                  onClick={() => navigate("/calendar")}
-                >
-                  <Calendar className="h-5 w-5 mb-1" />
-                  <span className="text-sm">Calendar</span>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="flex flex-col h-auto py-3"
-                  onClick={() => navigate("/leave-balance")}
-                >
-                  <BarChart3 className="h-5 w-5 mb-1" />
-                  <span className="text-sm">Leave Balance</span>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="flex flex-col h-auto py-3"
-                  onClick={() => {}}
-                >
-                  <Users className="h-5 w-5 mb-1" />
-                  <span className="text-sm">Faculty</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-md p-4 space-y-3">
-            <h3 className="text-lg font-semibold flex items-center justify-between">
-              <span>Leave Balance</span>
-              <Button 
-                variant="link" 
-                size="sm" 
-                className="text-primary hover:underline p-0 h-auto"
-                onClick={() => navigate("/leave-balance")}
-              >
-                View Details
-              </Button>
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between text-sm">
-                  <span>Medical Leave</span>
-                  <span className="font-medium">3/10 days used</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
-                  <div className="bg-red-500 h-2.5 rounded-full" style={{ width: "30%" }}></div>
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between text-sm">
-                  <span>Personal Leave</span>
-                  <span className="font-medium">2/5 days used</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
-                  <div className="bg-blue-500 h-2.5 rounded-full" style={{ width: "40%" }}></div>
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between text-sm">
-                  <span>Academic Leave</span>
-                  <span className="font-medium">1/7 days used</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
-                  <div className="bg-purple-500 h-2.5 rounded-full" style={{ width: "14%" }}></div>
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between text-sm">
-                  <span>Emergency Leave</span>
-                  <span className="font-medium">0/3 days used</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mt-1">
-                  <div className="bg-orange-500 h-2.5 rounded-full" style={{ width: "0%" }}></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <LeaveStatistics 
-          total={totalLeaves} 
-          approved={approvedLeaves} 
-          pending={pendingLeaves} 
-          rejected={rejectedLeaves} 
+        <UserWelcomeCard 
+          userName={userData.name}
+          upcomingLeaveCount={upcomingLeaves.length}
+          pendingApprovalCount={pendingLeaves}
         />
 
-        <div className="mt-8 mb-6">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Leave Calendar</CardTitle>
-              <CardDescription>Upcoming approved leaves on your calendar</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <LeaveCalendarPreview 
-                leaves={applications.filter(app => app.status === "approved")} 
-              />
-              <div className="mt-4 flex justify-end">
-                <Button variant="outline" size="sm" onClick={() => navigate("/calendar")}>
-                  <Calendar className="h-4 w-4 mr-2" />
-                  View Full Calendar
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-          <div className="flex flex-col md:flex-row gap-4 mb-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
-                <Input
-                  placeholder="Search applications..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8"
-                />
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <div className="w-40">
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Statuses</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="under_review">Under Review</SelectItem>
-                    <SelectItem value="needs_info">Needs Info</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="w-40">
-                <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Types</SelectItem>
-                    <SelectItem value="medical">Medical</SelectItem>
-                    <SelectItem value="personal">Personal</SelectItem>
-                    <SelectItem value="academic">Academic</SelectItem>
-                    <SelectItem value="emergency">Emergency</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <DateRangePicker 
-                date={dateRange}
-                onChange={setDateRange}
-              />
-              <Button variant="ghost" size="icon" onClick={resetFilters}>
-                <RefreshCw className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-          <div className="flex flex-wrap justify-between items-center">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
-              <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
-                <TabsTrigger value="pending">Pending</TabsTrigger>
-                <TabsTrigger value="past">Past</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <div className="flex mt-2 sm:mt-0 gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export
-                    <ChevronDown className="h-4 w-4 ml-2" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={handleExportApplications}>
-                    <Download className="h-4 w-4 mr-2" />
-                    Export as CSV
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handlePrintApplications}>
-                    <Printer className="h-4 w-4 mr-2" />
-                    Print
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </div>
-
-        <h2 className="text-xl font-semibold mb-4">
-          Leave Applications
-          {tabFilteredApplications.length > 0 && <span className="text-sm font-normal text-gray-500 ml-2">({tabFilteredApplications.length} applications)</span>}
-        </h2>
-        
-        {isLoading ? (
-          <div className="flex justify-center py-12">
-            <RefreshCw className="h-8 w-8 text-primary animate-spin" />
-          </div>
-        ) : tabFilteredApplications.length > 0 ? (
-          <div className="space-y-4">
-            {tabFilteredApplications.map((application) => (
-              <div
-                key={application.id}
-                className="bg-white p-6 rounded-lg shadow-md space-y-4"
-              >
-                <div className="flex justify-between items-start">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-lg font-bold">{application.title}</h2>
-                      <Badge className={getLeaveTypeColor(application.leaveType)}>
-                        {application.leaveType.charAt(0).toUpperCase() + application.leaveType.slice(1)}
-                      </Badge>
-                    </div>
-                    <h3 className="font-semibold text-gray-700">{application.reason}</h3>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Calendar className="h-4 w-4" />
-                      <p>{format(parseISO(application.fromDate), 'PPP')} to {format(parseISO(application.toDate), 'PPP')}</p>
-                    </div>
-                    <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
-                      <p>Course: {application.course}</p>
-                      <p>Branch: {application.branch}</p>
-                      <p>Semester: {application.semester}</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          <div className="col-span-2 space-y-6">
+            <LeaveStatistics 
+              total={totalLeaves} 
+              approved={approvedLeaves} 
+              pending={pendingLeaves} 
+              rejected={rejectedLeaves} 
+            />
+            
+            {upcomingLeave ? (
+              <Card className="shadow-sm border-l-4 border-l-primary">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-lg flex items-center">
+                    <Calendar className="h-5 w-5 mr-2 text-primary" />
+                    Your Next Leave
+                  </CardTitle>
+                  <CardDescription>
+                    Starting {format(parseISO(upcomingLeave.fromDate), 'EEEE, MMMM dd, yyyy')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-semibold text-lg">{upcomingLeave.title}</h4>
+                        <p className="text-gray-600">{upcomingLeave.reason}</p>
+                      </div>
+                      <ApplicationStatus status={upcomingLeave.status} />
                     </div>
                     
-                    {application.attachments && application.attachments.length > 0 && (
-                      <div className="flex items-center gap-1 text-sm text-blue-600">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Calendar className="h-4 w-4 text-gray-500" />
+                      <span>
+                        From {format(parseISO(upcomingLeave.fromDate), 'MMMM dd')} to {format(parseISO(upcomingLeave.toDate), 'MMMM dd, yyyy')}
+                      </span>
+                    </div>
+                    
+                    {upcomingLeave.attachments && upcomingLeave.attachments.length > 0 && (
+                      <div className="flex items-center gap-2 text-sm text-blue-600">
                         <FileText className="h-4 w-4" />
-                        <span>{application.attachments.length} attachment(s)</span>
+                        <span>{upcomingLeave.attachments.length} attachment(s)</span>
                       </div>
                     )}
+                    
+                    <div className="pt-2 flex justify-end gap-2">
+                      {["pending", "under_review", "needs_info"].includes(upcomingLeave.status) && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleCancelApplication(upcomingLeave.id)}
+                          className="border-red-200 text-red-600 hover:bg-red-50"
+                        >
+                          <X className="h-4 w-4 mr-1" />
+                          Cancel
+                        </Button>
+                      )}
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleViewDetails(upcomingLeave)}
+                      >
+                        <Eye className="h-4 w-4 mr-1" />
+                        View Details
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-4">
-                    <ApplicationStatus status={application.status} />
-                    <div className="flex gap-2">
-                      {["pending", "under_review", "needs_info"].includes(application.status) && (
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="shadow-sm">
+                <CardContent className="pt-6">
+                  <div className="text-center py-6">
+                    <Calendar className="h-12 w-12 mx-auto text-gray-300 mb-2" />
+                    <h3 className="text-lg font-medium">No Upcoming Leaves</h3>
+                    <p className="text-gray-500 mb-4">You don't have any upcoming leave scheduled</p>
+                    <Button onClick={() => navigate("/")}>Apply for Leave</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Leave Calendar</CardTitle>
+                <CardDescription>View your approved leaves on the calendar</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <LeaveCalendarPreview 
+                  leaves={applications.filter(app => app.status === "approved")} 
+                />
+                <div className="mt-4 flex justify-end">
+                  <Button variant="outline" size="sm" onClick={() => navigate("/calendar")}>
+                    <Calendar className="h-4 w-4 mr-2" />
+                    View Full Calendar
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="space-y-6">
+            <LeaveBalanceCard balances={userData.leaveBalances} />
+            
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Quick Actions</CardTitle>
+                <CardDescription>Frequently used actions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-3">
+                  <Button 
+                    variant="outline" 
+                    className="flex flex-col h-24 hover:bg-primary hover:text-white transition-colors"
+                    onClick={() => navigate("/")}
+                  >
+                    <span className="text-xl mb-1">+</span>
+                    <span className="text-sm">New Leave</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="flex flex-col h-24 hover:bg-primary hover:text-white transition-colors"
+                    onClick={() => navigate("/calendar")}
+                  >
+                    <Calendar className="h-5 w-5 mb-1" />
+                    <span className="text-sm">Calendar</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="flex flex-col h-24 hover:bg-primary hover:text-white transition-colors"
+                    onClick={() => navigate("/leave-balance")}
+                  >
+                    <BarChart3 className="h-5 w-5 mb-1" />
+                    <span className="text-sm">Leave Balance</span>
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    className="flex flex-col h-24 hover:bg-primary hover:text-white transition-colors"
+                    onClick={() => {}}
+                  >
+                    <Users className="h-5 w-5 mb-1" />
+                    <span className="text-sm">Faculty</span>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <div className="bg-white p-4 rounded-lg shadow-md mb-6">
+            <div className="flex flex-col md:flex-row gap-4 mb-4">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                  <Input
+                    placeholder="Search your applications..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-8"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <div className="w-40">
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Statuses</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="under_review">Under Review</SelectItem>
+                      <SelectItem value="needs_info">Needs Info</SelectItem>
+                      <SelectItem value="approved">Approved</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="w-40">
+                  <Select value={typeFilter} onValueChange={setTypeFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">All Types</SelectItem>
+                      <SelectItem value="medical">Medical</SelectItem>
+                      <SelectItem value="personal">Personal</SelectItem>
+                      <SelectItem value="academic">Academic</SelectItem>
+                      <SelectItem value="emergency">Emergency</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <DateRangePicker 
+                  date={dateRange}
+                  onChange={setDateRange}
+                />
+                <Button variant="ghost" size="icon" onClick={resetFilters}>
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+            <div className="flex flex-wrap justify-between items-center">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
+                <TabsList>
+                  <TabsTrigger value="all">All</TabsTrigger>
+                  <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+                  <TabsTrigger value="pending">Pending</TabsTrigger>
+                  <TabsTrigger value="past">Past</TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <div className="flex mt-2 sm:mt-0 gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Download className="h-4 w-4 mr-2" />
+                      Export
+                      <ChevronDown className="h-4 w-4 ml-2" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleExportApplications}>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export as CSV
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handlePrintApplications}>
+                      <Printer className="h-4 w-4 mr-2" />
+                      Print
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+          </div>
+
+          <h2 className="text-xl font-semibold mb-4">
+            Your Leave Applications
+            {tabFilteredApplications.length > 0 && <span className="text-sm font-normal text-gray-500 ml-2">({tabFilteredApplications.length} applications)</span>}
+          </h2>
+          
+          {isLoading ? (
+            <div className="flex justify-center py-12">
+              <RefreshCw className="h-8 w-8 text-primary animate-spin" />
+            </div>
+          ) : tabFilteredApplications.length > 0 ? (
+            <div className="space-y-4">
+              {tabFilteredApplications.map((application) => (
+                <div
+                  key={application.id}
+                  className="bg-white p-6 rounded-lg shadow-md space-y-4"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-lg font-bold">{application.title}</h2>
+                        <Badge className={getLeaveTypeColor(application.leaveType)}>
+                          {application.leaveType.charAt(0).toUpperCase() + application.leaveType.slice(1)}
+                        </Badge>
+                      </div>
+                      <h3 className="font-semibold text-gray-700">{application.reason}</h3>
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Calendar className="h-4 w-4" />
+                        <p>{format(parseISO(application.fromDate), 'PPP')} to {format(parseISO(application.toDate), 'PPP')}</p>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
+                        <p>Course: {application.course}</p>
+                        <p>Branch: {application.branch}</p>
+                        <p>Semester: {application.semester}</p>
+                      </div>
+                      
+                      {application.attachments && application.attachments.length > 0 && (
+                        <div className="flex items-center gap-1 text-sm text-blue-600">
+                          <FileText className="h-4 w-4" />
+                          <span>{application.attachments.length} attachment(s)</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <ApplicationStatus status={application.status} />
+                      <div className="flex gap-2">
+                        {["pending", "under_review", "needs_info"].includes(application.status) && (
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleCancelApplication(application.id)}
+                            disabled={isLoading}
+                          >
+                            {isLoading ? (
+                              <RefreshCw className="h-4 w-4 mr-1 animate-spin" />
+                            ) : (
+                              <X className="h-4 w-4 mr-1" />
+                            )}
+                            Cancel
+                          </Button>
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewDetails(application)}
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          Details
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="pt-4 border-t">
+                    <ApplicationProgress status={application.status} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white p-6 rounded-lg shadow-md text-center">
+              <p className="text-gray-500 mb-2">No leave applications found matching your filters.</p>
+              <Button variant="outline" onClick={resetFilters} className="mr-2">
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Reset Filters
+              </Button>
+              <Button onClick={() => navigate("/")}>Submit New Application</Button>
+            </div>
+          )}
+
+          <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+            <DialogContent className="max-w-2xl">
+              {selectedApplication && (
+                <>
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      {selectedApplication.title}
+                      <Badge className={getLeaveTypeColor(selectedApplication.leaveType)}>
+                        {selectedApplication.leaveType.charAt(0).toUpperCase() + selectedApplication.leaveType.slice(1)}
+                      </Badge>
+                    </DialogTitle>
+                    <DialogDescription>
+                      Application Date: {format(parseISO(selectedApplication.date), 'PPP')}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 mt-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h3 className="font-semibold">Status</h3>
+                        <ApplicationStatus status={selectedApplication.status} />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Date Range</h3>
+                        <p className="text-gray-700">{format(parseISO(selectedApplication.fromDate), 'PPP')} to {format(parseISO(selectedApplication.toDate), 'PPP')}</p>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="font-semibold">Reason</h3>
+                      <p className="text-gray-700">{selectedApplication.reason}</p>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <h3 className="font-semibold">Course</h3>
+                        <p className="text-gray-700">{selectedApplication.course}</p>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Branch</h3>
+                        <p className="text-gray-700">{selectedApplication.branch}</p>
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">Semester</h3>
+                        <p className="text-gray-700">{selectedApplication.semester}</p>
+                      </div>
+                    </div>
+                    
+                    {selectedApplication.attachments && selectedApplication.attachments.length > 0 && (
+                      <div>
+                        <h3 className="font-semibold">Attachments</h3>
+                        <ul className="list-disc pl-5">
+                          {selectedApplication.attachments.map((attachment, index) => (
+                            <li key={index} className="text-blue-600 underline cursor-pointer">
+                              {attachment}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {["pending", "under_review", "needs_info"].includes(selectedApplication.status) && (
+                      <div className="flex justify-end">
                         <Button
                           variant="destructive"
-                          size="sm"
-                          onClick={() => handleCancelApplication(application.id)}
+                          onClick={() => {
+                            handleCancelApplication(selectedApplication.id);
+                            setShowDetailsDialog(false);
+                          }}
                           disabled={isLoading}
                         >
                           {isLoading ? (
@@ -565,121 +672,16 @@ const Dashboard = () => {
                           ) : (
                             <X className="h-4 w-4 mr-1" />
                           )}
-                          Cancel
+                          Cancel Application
                         </Button>
-                      )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleViewDetails(application)}
-                      >
-                        <Eye className="h-4 w-4 mr-1" />
-                        Details
-                      </Button>
-                    </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-                <div className="pt-4 border-t">
-                  <ApplicationProgress status={application.status} />
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="bg-white p-6 rounded-lg shadow-md text-center">
-            <p className="text-gray-500 mb-2">No leave applications found matching your filters.</p>
-            <Button variant="outline" onClick={resetFilters} className="mr-2">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Reset Filters
-            </Button>
-            <Button onClick={() => navigate("/")}>Submit New Application</Button>
-          </div>
-        )}
-
-        <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
-          <DialogContent className="max-w-2xl">
-            {selectedApplication && (
-              <>
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2">
-                    {selectedApplication.title}
-                    <Badge className={getLeaveTypeColor(selectedApplication.leaveType)}>
-                      {selectedApplication.leaveType.charAt(0).toUpperCase() + selectedApplication.leaveType.slice(1)}
-                    </Badge>
-                  </DialogTitle>
-                  <DialogDescription>
-                    Application Date: {format(parseISO(selectedApplication.date), 'PPP')}
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4 mt-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <h3 className="font-semibold">Status</h3>
-                      <ApplicationStatus status={selectedApplication.status} />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Date Range</h3>
-                      <p className="text-gray-700">{format(parseISO(selectedApplication.fromDate), 'PPP')} to {format(parseISO(selectedApplication.toDate), 'PPP')}</p>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <h3 className="font-semibold">Reason</h3>
-                    <p className="text-gray-700">{selectedApplication.reason}</p>
-                  </div>
-                  
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <h3 className="font-semibold">Course</h3>
-                      <p className="text-gray-700">{selectedApplication.course}</p>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Branch</h3>
-                      <p className="text-gray-700">{selectedApplication.branch}</p>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Semester</h3>
-                      <p className="text-gray-700">{selectedApplication.semester}</p>
-                    </div>
-                  </div>
-                  
-                  {selectedApplication.attachments && selectedApplication.attachments.length > 0 && (
-                    <div>
-                      <h3 className="font-semibold">Attachments</h3>
-                      <ul className="list-disc pl-5">
-                        {selectedApplication.attachments.map((attachment, index) => (
-                          <li key={index} className="text-blue-600 underline cursor-pointer">
-                            {attachment}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  
-                  {["pending", "under_review", "needs_info"].includes(selectedApplication.status) && (
-                    <div className="flex justify-end">
-                      <Button
-                        variant="destructive"
-                        onClick={() => {
-                          handleCancelApplication(selectedApplication.id);
-                          setShowDetailsDialog(false);
-                        }}
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <RefreshCw className="h-4 w-4 mr-1 animate-spin" />
-                        ) : (
-                          <X className="h-4 w-4 mr-1" />
-                        )}
-                        Cancel Application
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
-          </DialogContent>
-        </Dialog>
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
+        </div>
       </main>
     </div>
   );
