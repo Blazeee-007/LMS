@@ -11,11 +11,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { SelectSingleEventHandler } from "react-day-picker";
 
 interface DateRangePickerProps {
   date: DateRange | undefined;
-  onChange: (date: DateRange) => void;
+  onChange: (date: DateRange | undefined) => void;
   className?: string;
 }
 
