@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/Header";
 import { ApplicationStatus, ApplicationProgress } from "@/components/ApplicationStatus";
 import { Button } from "@/components/ui/button";
@@ -77,10 +78,10 @@ const Dashboard = () => {
   const userData = {
     name: "Sai Sasank Vanapalli",
     leaveBalances: [
-      { type: "medical", used: 3, total: 10, color: "bg-red-500" },
-      { type: "personal", used: 2, total: 5, color: "bg-blue-500" },
-      { type: "academic", used: 1, total: 7, color: "bg-purple-500" },
-      { type: "emergency", used: 0, total: 3, color: "bg-orange-500" }
+      { type: "medical" as const, used: 3, total: 10, color: "bg-red-500" },
+      { type: "personal" as const, used: 2, total: 5, color: "bg-blue-500" },
+      { type: "academic" as const, used: 1, total: 7, color: "bg-purple-500" },
+      { type: "emergency" as const, used: 0, total: 3, color: "bg-orange-500" }
     ]
   };
 
