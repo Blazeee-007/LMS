@@ -228,8 +228,8 @@ const Dashboard = () => {
 
   const resetFilters = () => {
     setSearchTerm("");
-    setStatusFilter("");
-    setTypeFilter("");
+    setStatusFilter("all");
+    setTypeFilter("all");
     setDateRange(undefined);
   };
 
