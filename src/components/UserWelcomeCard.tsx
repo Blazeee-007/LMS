@@ -4,20 +4,20 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, Clock, BarChart3, FileText } from "lucide-react";
+import { useUser } from "@/context/UserContext";
 
 interface UserWelcomeCardProps {
-  userName: string;
   upcomingLeaveCount: number;
   pendingApprovalCount: number;
 }
 
 export const UserWelcomeCard = ({ 
-  userName, 
   upcomingLeaveCount, 
   pendingApprovalCount 
 }: UserWelcomeCardProps) => {
   const [greeting, setGreeting] = useState<string>("");
   const navigate = useNavigate();
+  const { user } = useUser();
   
   useEffect(() => {
     const hour = new Date().getHours();
@@ -33,7 +33,7 @@ export const UserWelcomeCard = ({
           <div className="space-y-4">
             <div className="space-y-1">
               <h2 className="text-2xl md:text-3xl font-bold text-primary dark:text-primary-foreground">
-                {greeting}, {userName}!
+                {greeting}, {user?.name}!
               </h2>
               <p className="text-muted-foreground">
                 Welcome to your personalized leave management dashboard

@@ -8,6 +8,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ModeToggle } from "./components/ModeToggle";
 import { Footer } from "./components/Footer";
 import { MobileFooter } from "./components/MobileFooter";
+import { UserProvider } from "./context/UserContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -23,27 +25,85 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider defaultTheme="system" enableSystem>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
         <BrowserRouter>
-          <div className="min-h-screen flex flex-col pb-mobile-footer md:pb-0">
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/calendar" element={<CalendarView />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/leave-balance" element={<LeaveBalance />} />
-              <Route path="/notifications" element={<Dashboard />} /> {/* Notifications will use Dashboard for now */}
-              <Route path="/settings" element={<Profile />} /> {/* Settings will use Profile for now */}
-              <Route path="/application" element={<Index />} /> {/* Direct to application form */}
-              <Route path="/" element={<Index />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <ModeToggle />
-            <Footer />
-            <MobileFooter />
-          </div>
+          <UserProvider>
+            <Toaster />
+            <Sonner />
+            <div className="min-h-screen flex flex-col pb-mobile-footer md:pb-0">
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Index />} />
+                <Route 
+                  path="/dashboard" 
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin" 
+                  element={
+                    <ProtectedRoute requireAdmin={true}>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/calendar" 
+                  element={
+                    <ProtectedRoute>
+                      <CalendarView />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/profile" 
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/leave-balance" 
+                  element={
+                    <ProtectedRoute>
+                      <LeaveBalance />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/notifications" 
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/settings" 
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/application" 
+                  element={
+                    <ProtectedRoute>
+                      <Index />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <ModeToggle />
+              <Footer />
+              <MobileFooter />
+            </div>
+          </UserProvider>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>

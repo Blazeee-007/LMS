@@ -1,40 +1,23 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
-import { Mail, Lock, ClipboardList } from "lucide-react";
+import { ClipboardList } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { useUser } from "@/context/UserContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  const { login, isLoading } = useUser();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email === "student@college.edu" && password === "password") {
-      toast({
-        title: "Login Successful",
-        description: "Welcome back!",
-      });
-      navigate("/dashboard");
-    } else {
-      toast({
-        title: "Login Failed",
-        description: "Invalid credentials",
-        variant: "destructive",
-      });
-    }
+    await login(email, password);
   };
 
   const handleGoogleSignIn = () => {
-    toast({
-      title: "Google Sign In",
-      description: "Please connect Supabase to enable Google Sign In",
-    });
+    // This would be implemented with Supabase or another auth provider
   };
 
   return (
@@ -92,7 +75,6 @@ const Login = () => {
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-4">
               <div className="relative group">
-                <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 transition-colors group-hover:text-[#6E59A5]" />
                 <Input
                   type="email"
                   placeholder="College Email"
@@ -103,7 +85,6 @@ const Login = () => {
                 />
               </div>
               <div className="relative group">
-                <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 transition-colors group-hover:text-[#6E59A5]" />
                 <Input
                   type="password"
                   placeholder="Password"
@@ -117,12 +98,16 @@ const Login = () => {
             <Button 
               type="submit" 
               className="w-full bg-gradient-to-r from-[#6E59A5] to-[#9b87f5] hover:opacity-90 transition-all duration-200 shadow-lg shadow-[#6E59A5]/20"
+              disabled={isLoading}
             >
-              Sign in
+              {isLoading ? "Signing in..." : "Sign in"}
             </Button>
             <div className="text-center">
               <p className="text-sm text-[#8E9196]">
-                Demo credentials: student@college.edu / password
+                Student Demo: student@college.edu / password
+              </p>
+              <p className="text-sm text-[#8E9196]">
+                Admin Demo: admin@college.edu / admin
               </p>
             </div>
           </form>

@@ -4,9 +4,11 @@ import { Header } from "@/components/Header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "@/context/UserContext";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { user } = useUser();
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -43,20 +45,24 @@ const Profile = () => {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-gray-700">Full Name</label>
-                      <p className="mt-1 text-gray-900 font-medium">Sai Sasank Vanapalli</p>
+                      <p className="mt-1 text-gray-900 font-medium">{user?.name}</p>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Student ID</label>
-                      <p className="mt-1 text-gray-900 font-medium">233B1a05C1</p>
-                    </div>
+                    {user?.studentId && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Student ID</label>
+                        <p className="mt-1 text-gray-900 font-medium">{user.studentId}</p>
+                      </div>
+                    )}
                     <div>
                       <label className="text-sm font-medium text-gray-700">Email</label>
-                      <p className="mt-1 text-gray-900 font-medium">saisasank@gmail.com</p>
+                      <p className="mt-1 text-gray-900 font-medium">{user?.email}</p>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Department</label>
-                      <p className="mt-1 text-gray-900 font-medium">Computer Science</p>
-                    </div>
+                    {user?.department && (
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Department</label>
+                        <p className="mt-1 text-gray-900 font-medium">{user.department}</p>
+                      </div>
+                    )}
                     <div>
                       <label className="text-sm font-medium text-gray-700">Mobile Number</label>
                       <div className="flex items-center gap-2 mt-1">
@@ -69,45 +75,47 @@ const Profile = () => {
               </CardContent>
             </Card>
 
-            <Card className="shadow-lg border-t-4 border-t-primary/80">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  <CardTitle>Parent/Guardian Information</CardTitle>
-                </div>
-                <CardDescription>Parent or guardian contact details</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Father's Name</label>
-                      <p className="mt-1 text-gray-900 font-medium">Srinivasu Vanapalli</p>
+            {user?.role === "student" && (
+              <Card className="shadow-lg border-t-4 border-t-primary/80">
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-primary" />
+                    <CardTitle>Parent/Guardian Information</CardTitle>
+                  </div>
+                  <CardDescription>Parent or guardian contact details</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Father's Name</label>
+                        <p className="mt-1 text-gray-900 font-medium">Srinivasu Vanapalli</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Father's Mobile</label>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Phone className="h-4 w-4 text-primary" />
+                          <p className="text-gray-900 font-medium">+91 9908910423</p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Father's Mobile</label>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Phone className="h-4 w-4 text-primary" />
-                        <p className="text-gray-900 font-medium">+91 9908910423</p>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Mother's Name</label>
+                        <p className="mt-1 text-gray-900 font-medium">Dhana Lakshmi Vanapalli</p>
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Mother's Mobile</label>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Phone className="h-4 w-4 text-primary" />
+                          <p className="text-gray-900 font-medium">+91 9398844240</p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Mother's Name</label>
-                      <p className="mt-1 text-gray-900 font-medium">Dhana Lakshmi Vanapalli</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">Mother's Mobile</label>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Phone className="h-4 w-4 text-primary" />
-                        <p className="text-gray-900 font-medium">+91 9398844240</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
 
             <Card className="shadow-lg border-t-4 border-t-primary/60">
               <CardHeader>

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { UserCircle, Bell } from "lucide-react";
+import { UserCircle, Bell, LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +12,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import { useUser } from "@/context/UserContext";
 
 export const Header = () => {
+  const { user, logout, isAdmin } = useUser();
   const [notifications, setNotifications] = useState([
     { id: 1, message: "Your leave request has been approved", read: false },
     { id: 2, message: "New announcement from administration", read: false },
@@ -54,6 +56,11 @@ export const Header = () => {
           <Link to="/leave-balance" className="text-sm font-medium hover:text-primary transition-colors">
             Leave Balance
           </Link>
+          {isAdmin && (
+            <Link to="/admin" className="text-sm font-medium hover:text-primary transition-colors">
+              Admin Panel
+            </Link>
+          )}
         </nav>
         <div className="flex items-center gap-4">
           <DropdownMenu>
@@ -114,7 +121,10 @@ export const Header = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel className="flex flex-col">
+                <span>{user?.name || "User"}</span>
+                <span className="text-xs text-muted-foreground">{user?.email}</span>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link to="/profile">Profile</Link>
@@ -125,9 +135,15 @@ export const Header = () => {
               <DropdownMenuItem asChild>
                 <Link to="/settings">Settings</Link>
               </DropdownMenuItem>
+              {isAdmin && (
+                <DropdownMenuItem asChild>
+                  <Link to="/admin">Admin Dashboard</Link>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Link to="/login">Logout</Link>
+              <DropdownMenuItem onClick={logout} className="text-red-500 focus:text-red-500">
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
