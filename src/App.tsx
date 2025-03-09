@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ModeToggle } from "./components/ModeToggle";
 import { Footer } from "./components/Footer";
+import { MobileFooter } from "./components/MobileFooter";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -25,7 +26,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen flex flex-col pb-mobile-footer md:pb-0">
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
@@ -41,6 +42,7 @@ const App = () => (
             </Routes>
             <ModeToggle />
             <Footer />
+            <MobileFooter />
           </div>
         </BrowserRouter>
       </TooltipProvider>

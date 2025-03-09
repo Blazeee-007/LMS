@@ -1,28 +1,45 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
-import { CalendarClock, BarChart3, Home, Mail, Search, User } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { CalendarClock, BarChart3, Home, Search, User } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export const MobileFooter = () => {
+  const location = useLocation();
+  
+  // Helper function to determine if a path is active
+  const isActive = (path: string) => {
+    if (path === "/" && location.pathname === "/") return true;
+    if (path !== "/" && location.pathname.startsWith(path)) return true;
+    return false;
+  };
+
   return (
     <div className="fixed bottom-0 left-0 w-full bg-white dark:bg-gray-900 shadow-lg border-t border-gray-200 dark:border-gray-800 md:hidden z-10">
       <div className="flex justify-around items-center h-16">
         <Link
           to="/"
-          className="flex flex-col items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
+          className={`flex flex-col items-center justify-center transition-colors ${
+            isActive("/") 
+            ? "text-primary font-medium" 
+            : "text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
+          }`}
         >
-          <Home className="h-5 w-5" />
+          <Home className={`h-5 w-5 ${isActive("/") ? "text-primary" : ""}`} />
           <span className="text-xs mt-1">Home</span>
         </Link>
         
         <Link
           to="/leave-balance"
-          className="flex flex-col items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
+          className={`flex flex-col items-center justify-center transition-colors ${
+            isActive("/leave-balance") 
+            ? "text-primary font-medium" 
+            : "text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
+          }`}
         >
-          <BarChart3 className="h-5 w-5" />
+          <BarChart3 className={`h-5 w-5 ${isActive("/leave-balance") ? "text-primary" : ""}`} />
           <span className="text-xs mt-1">Balance</span>
         </Link>
         
@@ -33,7 +50,7 @@ export const MobileFooter = () => {
           <div className="absolute -top-5 w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-md">
             <CalendarClock className="h-6 w-6 text-white" />
           </div>
-          <span className="text-xs mt-7 text-primary font-medium">Apply</span>
+          <span className={`text-xs mt-7 font-medium ${isActive("/application") ? "text-primary" : "text-gray-600 dark:text-gray-400"}`}>Apply</span>
         </Link>
         
         <Sheet>
@@ -67,9 +84,13 @@ export const MobileFooter = () => {
         
         <Link
           to="/profile"
-          className="flex flex-col items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
+          className={`flex flex-col items-center justify-center transition-colors ${
+            isActive("/profile") 
+            ? "text-primary font-medium" 
+            : "text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
+          }`}
         >
-          <User className="h-5 w-5" />
+          <User className={`h-5 w-5 ${isActive("/profile") ? "text-primary" : ""}`} />
           <span className="text-xs mt-1">Profile</span>
         </Link>
       </div>
