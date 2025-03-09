@@ -1,14 +1,14 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { CalendarClock, BarChart3, Home, Mail, Search } from "lucide-react";
+import { CalendarClock, BarChart3, Home, Mail, Search, User } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 export const MobileFooter = () => {
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white dark:bg-gray-900 shadow-md border-t border-gray-200 dark:border-gray-800 md:hidden z-10">
+    <div className="fixed bottom-0 left-0 w-full bg-white dark:bg-gray-900 shadow-lg border-t border-gray-200 dark:border-gray-800 md:hidden z-10">
       <div className="flex justify-around items-center h-16">
         <Link
           to="/"
@@ -28,10 +28,12 @@ export const MobileFooter = () => {
         
         <Link
           to="/application"
-          className="flex flex-col items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
+          className="flex flex-col items-center justify-center relative group"
         >
-          <CalendarClock className="h-5 w-5" />
-          <span className="text-xs mt-1">Apply</span>
+          <div className="absolute -top-5 w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-md">
+            <CalendarClock className="h-6 w-6 text-white" />
+          </div>
+          <span className="text-xs mt-7 text-primary font-medium">Apply</span>
         </Link>
         
         <Sheet>
@@ -41,9 +43,9 @@ export const MobileFooter = () => {
               <span className="text-xs mt-1">Search</span>
             </button>
           </SheetTrigger>
-          <SheetContent side="bottom" className="h-80">
-            <SheetHeader>
-              <SheetTitle>Search</SheetTitle>
+          <SheetContent side="bottom" className="h-72 rounded-t-xl">
+            <SheetHeader className="pb-2">
+              <SheetTitle>Quick Search</SheetTitle>
             </SheetHeader>
             <div className="flex flex-col gap-4 py-4">
               <div className="flex gap-2">
@@ -51,24 +53,25 @@ export const MobileFooter = () => {
                 <Button type="submit">Search</Button>
               </div>
               <div className="space-y-2">
-                <h3 className="text-sm font-medium">Quick searches</h3>
+                <h3 className="text-sm font-medium">Quick access</h3>
                 <div className="flex flex-wrap gap-2">
-                  <Button variant="outline" size="sm">My pending leaves</Button>
-                  <Button variant="outline" size="sm">Sick leave balance</Button>
-                  <Button variant="outline" size="sm">Holiday calendar</Button>
+                  <Button variant="outline" size="sm">Pending leaves</Button>
+                  <Button variant="outline" size="sm">Leave balance</Button>
+                  <Button variant="outline" size="sm">Calendar</Button>
+                  <Button variant="outline" size="sm">New request</Button>
                 </div>
               </div>
             </div>
           </SheetContent>
         </Sheet>
         
-        <a
-          href="#support"
+        <Link
+          to="/profile"
           className="flex flex-col items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
         >
-          <Mail className="h-5 w-5" />
-          <span className="text-xs mt-1">Support</span>
-        </a>
+          <User className="h-5 w-5" />
+          <span className="text-xs mt-1">Profile</span>
+        </Link>
       </div>
     </div>
   );
