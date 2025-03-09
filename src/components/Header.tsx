@@ -1,152 +1,155 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { UserCircle, Bell, LogOut } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/context/UserContext";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { 
+  Bell, 
+  Calendar, 
+  ChevronDown, 
+  ClipboardList, 
+  FileText, 
+  Home, 
+  LogOut, 
+  Menu, 
+  Settings, 
+  User, 
+  Users,
+  CheckSquare
+} from "lucide-react";
 
 export const Header = () => {
-  const { user, logout, isAdmin } = useUser();
-  const [notifications, setNotifications] = useState([
-    { id: 1, message: "Your leave request has been approved", read: false },
-    { id: 2, message: "New announcement from administration", read: false },
-    { id: 3, message: "Reminder: Upload documents for medical leave", read: true },
-  ]);
+  const { user, logout, isAdmin, isFaculty } = useUser();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const unreadCount = notifications.filter(n => !n.read).length;
-
-  const markAsRead = (id: number) => {
-    setNotifications(notifications.map(notification => 
-      notification.id === id ? { ...notification, read: true } : notification
-    ));
+  const handleLogout = () => {
+    logout();
   };
 
-  const markAllAsRead = () => {
-    setNotifications(notifications.map(notification => ({ ...notification, read: true })));
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
-  
+
   return (
-    <header className="sticky top-0 z-40 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+    <header className="sticky top-0 z-40 border-b bg-background">
       <div className="container flex h-16 items-center justify-between py-4">
-        <div className="flex items-center gap-4">
-          <Link to="/" className="flex items-center gap-2">
-            <img src="/placeholder.svg" alt="Logo" className="h-8 w-8" />
-            <span className="text-xl font-bold tracking-tight">LeaveMS</span>
+        <div className="flex items-center gap-2 md:gap-4">
+          <Link to={isAdmin ? "/admin" : isFaculty ? "/faculty-dashboard" : "/dashboard"} className="flex items-center gap-2">
+            <ClipboardList className="h-6 w-6" />
+            <span className="font-bold">Leave Management System</span>
           </Link>
-        </div>
-        <nav className="hidden md:flex items-center gap-6">
-          <Link to="/" className="text-sm font-medium hover:text-primary transition-colors">
-            Home
-          </Link>
-          <Link to="/dashboard" className="text-sm font-medium hover:text-primary transition-colors">
-            Dashboard
-          </Link>
-          <Link to="/calendar" className="text-sm font-medium hover:text-primary transition-colors">
-            Calendar
-          </Link>
-          <Link to="/leave-balance" className="text-sm font-medium hover:text-primary transition-colors">
-            Leave Balance
-          </Link>
-          {isAdmin && (
-            <Link to="/admin" className="text-sm font-medium hover:text-primary transition-colors">
-              Admin Panel
-            </Link>
-          )}
-        </nav>
-        <div className="flex items-center gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                {unreadCount > 0 && (
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center" variant="destructive">
-                    {unreadCount}
-                  </Badge>
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80">
-              <DropdownMenuLabel className="flex justify-between items-center">
-                <span>Notifications</span>
-                {unreadCount > 0 && (
-                  <Button variant="ghost" size="sm" onClick={markAllAsRead} className="text-xs">
-                    Mark all as read
-                  </Button>
-                )}
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {notifications.length > 0 ? (
-                notifications.map((notification) => (
-                  <DropdownMenuItem key={notification.id} className="cursor-pointer p-3" onClick={() => markAsRead(notification.id)}>
-                    <div className="flex flex-col gap-1 w-full">
-                      <div className="flex justify-between items-center">
-                        <span className={`font-medium ${notification.read ? '' : 'text-primary'}`}>
-                          {notification.message}
-                        </span>
-                        {!notification.read && (
-                          <Badge variant="default" className="ml-2">New</Badge>
-                        )}
-                      </div>
-                      <span className="text-xs text-muted-foreground">Just now</span>
-                    </div>
-                  </DropdownMenuItem>
-                ))
-              ) : (
-                <div className="p-3 text-center text-muted-foreground">
-                  No notifications
-                </div>
-              )}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer justify-center" asChild>
-                <Link to="/notifications" className="w-full text-center text-sm font-medium">
-                  View all notifications
+
+          <div className="hidden md:flex items-center gap-6 text-sm">
+            {isAdmin ? (
+              <>
+                <Link 
+                  to="/admin" 
+                  className={`flex items-center gap-1 ${isActive("/admin") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  <Home className="h-4 w-4" />
+                  <span>Dashboard</span>
                 </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          
+                <Link 
+                  to="/users" 
+                  className={`flex items-center gap-1 ${isActive("/users") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  <Users className="h-4 w-4" />
+                  <span>Manage Users</span>
+                </Link>
+              </>
+            ) : isFaculty ? (
+              <>
+                <Link 
+                  to="/faculty-dashboard" 
+                  className={`flex items-center gap-1 ${isActive("/faculty-dashboard") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  <Home className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Link>
+                <Link 
+                  to="/attendance-overview" 
+                  className={`flex items-center gap-1 ${isActive("/attendance-overview") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  <CheckSquare className="h-4 w-4" />
+                  <span>Attendance</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link 
+                  to="/dashboard" 
+                  className={`flex items-center gap-1 ${isActive("/dashboard") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  <Home className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Link>
+                <Link 
+                  to="/leave-balance" 
+                  className={`flex items-center gap-1 ${isActive("/leave-balance") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  <FileText className="h-4 w-4" />
+                  <span>Leave Balance</span>
+                </Link>
+                <Link 
+                  to="/calendar" 
+                  className={`flex items-center gap-1 ${isActive("/calendar") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  <Calendar className="h-4 w-4" />
+                  <span>Calendar</span>
+                </Link>
+                <Link 
+                  to="/attendance" 
+                  className={`flex items-center gap-1 ${isActive("/attendance") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  <CheckSquare className="h-4 w-4" />
+                  <span>Attendance</span>
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="mr-2">
+            <Bell className="h-5 w-5" />
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <UserCircle className="h-6 w-6" />
+              <Button variant="ghost" className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                <span className="hidden md:inline-block">{user?.name}</span>
+                <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel className="flex flex-col">
-                <span>{user?.name || "User"}</span>
-                <span className="text-xs text-muted-foreground">{user?.email}</span>
-              </DropdownMenuLabel>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/profile">Profile</Link>
+              <DropdownMenuItem onClick={() => navigate("/profile")}>
+                <User className="mr-2 h-4 w-4" />
+                <span>Profile</span>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/dashboard">Dashboard</Link>
+              <DropdownMenuItem onClick={() => navigate("/settings")}>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/settings">Settings</Link>
-              </DropdownMenuItem>
-              {isAdmin && (
-                <DropdownMenuItem asChild>
-                  <Link to="/admin">Admin Dashboard</Link>
-                </DropdownMenuItem>
-              )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout} className="text-red-500 focus:text-red-500">
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          <Button variant="outline" size="icon" className="md:hidden">
+            <Menu className="h-5 w-5" />
+          </Button>
         </div>
       </div>
     </header>

@@ -10,6 +10,7 @@ export interface User {
   role: "admin" | "student" | "faculty";
   studentId?: string;
   department?: string;
+  facultyId?: string;
 }
 
 interface UserContextType {
@@ -19,6 +20,7 @@ interface UserContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isFaculty: boolean;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -79,6 +81,25 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
         
         navigate("/admin");
+      } else if (email === "faculty@college.edu" && password === "faculty") {
+        const facultyData: User = {
+          id: "f1",
+          name: "Dr. John Smith",
+          email: "faculty@college.edu",
+          role: "faculty",
+          facultyId: "FAC001",
+          department: "Computer Science"
+        };
+        
+        localStorage.setItem("user", JSON.stringify(facultyData));
+        setUser(facultyData);
+        
+        toast({
+          title: "Faculty Login Successful",
+          description: "Welcome back, " + facultyData.name,
+        });
+        
+        navigate("/faculty-dashboard");
       } else {
         toast({
           title: "Login Failed",
@@ -110,6 +131,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const isAuthenticated = !!user;
   const isAdmin = user?.role === "admin";
+  const isFaculty = user?.role === "faculty";
 
   return (
     <UserContext.Provider value={{ 
@@ -118,7 +140,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       login, 
       logout, 
       isAuthenticated,
-      isAdmin
+      isAdmin,
+      isFaculty
     }}>
       {children}
     </UserContext.Provider>

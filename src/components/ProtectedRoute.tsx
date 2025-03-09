@@ -5,11 +5,13 @@ import { useUser } from "@/context/UserContext";
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requireAdmin?: boolean;
+  allowedRoles?: ("admin" | "student" | "faculty")[];
 }
 
 export const ProtectedRoute = ({ 
   children, 
-  requireAdmin = false 
+  requireAdmin = false,
+  allowedRoles = []
 }: ProtectedRouteProps) => {
   const { user, isAuthenticated, isAdmin, isLoading } = useUser();
   const location = useLocation();
@@ -27,6 +29,18 @@ export const ProtectedRoute = ({
   if (requireAdmin && !isAdmin) {
     // Redirect to dashboard if not admin but admin access is required
     return <Navigate to="/dashboard" replace />;
+  }
+
+  // Check if the user has one of the allowed roles
+  if (allowedRoles.length > 0 && user?.role && !allowedRoles.includes(user.role)) {
+    // Redirect based on user role
+    if (user.role === "admin") {
+      return <Navigate to="/admin" replace />;
+    } else if (user.role === "faculty") {
+      return <Navigate to="/faculty-dashboard" replace />;
+    } else {
+      return <Navigate to="/dashboard" replace />;
+    }
   }
 
   return <>{children}</>;
