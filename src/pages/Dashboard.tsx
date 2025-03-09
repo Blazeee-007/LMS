@@ -70,8 +70,8 @@ const Dashboard = () => {
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
-  const [typeFilter, setTypeFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<StatusType | "all">("all");
+  const [typeFilter, setTypeFilter] = useState<LeaveType | "all">("all");
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [activeTab, setActiveTab] = useState("all");
 
@@ -162,8 +162,8 @@ const Dashboard = () => {
       app.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.branch.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesStatus = statusFilter === "" || app.status === statusFilter;
-    const matchesType = typeFilter === "" || app.leaveType === typeFilter;
+    const matchesStatus = statusFilter === "all" || app.status === statusFilter;
+    const matchesType = typeFilter === "all" || app.leaveType === typeFilter;
     
     let matchesDate = true;
     if (dateRange?.from && dateRange?.to) {
@@ -439,12 +439,12 @@ const Dashboard = () => {
               </div>
               <div className="flex flex-wrap gap-2">
                 <div className="w-40">
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as StatusType | "all")}>
                     <SelectTrigger>
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Statuses</SelectItem>
+                      <SelectItem value="all">All Statuses</SelectItem>
                       <SelectItem value="pending">Pending</SelectItem>
                       <SelectItem value="under_review">Under Review</SelectItem>
                       <SelectItem value="needs_info">Needs Info</SelectItem>
@@ -455,12 +455,12 @@ const Dashboard = () => {
                   </Select>
                 </div>
                 <div className="w-40">
-                  <Select value={typeFilter} onValueChange={setTypeFilter}>
+                  <Select value={typeFilter} onValueChange={(value) => setTypeFilter(value as LeaveType | "all")}>
                     <SelectTrigger>
                       <SelectValue placeholder="Type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All Types</SelectItem>
+                      <SelectItem value="all">All Types</SelectItem>
                       <SelectItem value="medical">Medical</SelectItem>
                       <SelectItem value="personal">Personal</SelectItem>
                       <SelectItem value="academic">Academic</SelectItem>
