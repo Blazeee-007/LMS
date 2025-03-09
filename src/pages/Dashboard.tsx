@@ -1,4 +1,3 @@
-
 import { Header } from "@/components/Header";
 import { ApplicationStatus, ApplicationProgress } from "@/components/ApplicationStatus";
 import { Button } from "@/components/ui/button";
@@ -270,7 +269,6 @@ const Dashboard = () => {
       <Header />
       <main className="container py-8">
         <UserWelcomeCard 
-          userName={userData.name}
           upcomingLeaveCount={upcomingLeaves.length}
           pendingApprovalCount={pendingLeaves}
         />
