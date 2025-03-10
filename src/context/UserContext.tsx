@@ -100,6 +100,25 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
         
         navigate("/faculty-dashboard");
+      } else if (email === "prof@college.edu" && password === "professor") {
+        const professorData: User = {
+          id: "f2",
+          name: "Dr. Emily Johnson",
+          email: "prof@college.edu",
+          role: "faculty",
+          facultyId: "FAC002",
+          department: "Electronics & Communication"
+        };
+        
+        localStorage.setItem("user", JSON.stringify(professorData));
+        setUser(professorData);
+        
+        toast({
+          title: "Faculty Login Successful",
+          description: "Welcome back, " + professorData.name,
+        });
+        
+        navigate("/faculty-dashboard");
       } else {
         toast({
           title: "Login Failed",

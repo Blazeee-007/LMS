@@ -109,6 +109,12 @@ const Login = () => {
               <p className="text-sm text-[#8E9196]">
                 Admin Demo: admin@college.edu / admin
               </p>
+              <p className="text-sm text-[#8E9196]">
+                Faculty Demo: faculty@college.edu / faculty
+              </p>
+              <p className="text-sm text-[#8E9196]">
+                Faculty 2 Demo: prof@college.edu / professor
+              </p>
             </div>
           </form>
         </div>
