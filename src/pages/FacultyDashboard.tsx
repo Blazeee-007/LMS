@@ -1,15 +1,29 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Header } from "@/components/Header";
 import { FacultyApproval } from "@/components/FacultyApproval";
+import { CourseSelector } from "@/components/CourseSelector";
 import { useUser } from "@/context/UserContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bell, Calendar, CheckCheck, FileText, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/components/ui/use-toast";
 
 const FacultyDashboard = () => {
   const { user } = useUser();
+  const { toast } = useToast();
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+  const [selectedBranch, setSelectedBranch] = useState<string | null>(null);
+
+  const handleCourseSelect = (courseId: string, branchId: string) => {
+    setSelectedCourse(courseId);
+    setSelectedBranch(branchId);
+    toast({
+      title: "Course selected",
+      description: `You are now viewing leave requests for the selected course.`,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -77,13 +91,15 @@ const FacultyDashboard = () => {
           </Card>
         </div>
 
+        <CourseSelector onCourseSelect={handleCourseSelect} />
+
         <Tabs defaultValue="leave-requests" className="w-full mb-8">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="leave-requests">Leave Requests</TabsTrigger>
             <TabsTrigger value="attendance-overview">Attendance Overview</TabsTrigger>
           </TabsList>
           <TabsContent value="leave-requests" className="mt-4">
-            <FacultyApproval />
+            <FacultyApproval selectedCourse={selectedCourse} selectedBranch={selectedBranch} />
           </TabsContent>
           <TabsContent value="attendance-overview" className="mt-4">
             <Card>

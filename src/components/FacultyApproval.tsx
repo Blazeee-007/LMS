@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -34,12 +34,19 @@ interface LeaveRequest {
   fromDate: string;
   toDate: string;
   course: string;
+  courseId?: string;
   branch: string;
+  branchId?: string;
   semester: string;
   attachments?: string[];
 }
 
-export const FacultyApproval = () => {
+interface FacultyApprovalProps {
+  selectedCourse: string | null;
+  selectedBranch: string | null;
+}
+
+export const FacultyApproval = ({ selectedCourse, selectedBranch }: FacultyApprovalProps) => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -65,7 +72,9 @@ export const FacultyApproval = () => {
       fromDate: "2024-06-12",
       toDate: "2024-06-14",
       course: "Data Structures",
+      courseId: "cse201",
       branch: "Computer Science (CSE)",
+      branchId: "cse",
       semester: "5-1"
     },
     {
@@ -80,7 +89,9 @@ export const FacultyApproval = () => {
       fromDate: "2024-06-15",
       toDate: "2024-06-18",
       course: "Database Management",
+      courseId: "cse301",
       branch: "Computer Science (CSE)",
+      branchId: "cse",
       semester: "5-1"
     },
     {
@@ -94,8 +105,10 @@ export const FacultyApproval = () => {
       leaveType: "academic",
       fromDate: "2024-06-20",
       toDate: "2024-06-22",
-      course: "All Courses",
-      branch: "Computer Science (CSE)",
+      course: "Basic Electronics",
+      courseId: "ece101",
+      branch: "Electronics & Communication (ECE)",
+      branchId: "ece",
       semester: "5-1"
     },
     {
@@ -109,13 +122,39 @@ export const FacultyApproval = () => {
       leaveType: "medical",
       fromDate: "2024-06-06",
       toDate: "2024-06-12",
-      course: "All Courses",
+      course: "Engineering Mechanics",
+      courseId: "mech101",
+      branch: "Mechanical Engineering (MECH)",
+      branchId: "mech",
+      semester: "5-1"
+    },
+    {
+      id: 5,
+      studentName: "Michael Brown",
+      studentId: "CS2021005",
+      date: "2024-06-11",
+      status: "pending",
+      title: "Family Emergency",
+      reason: "Grandmother hospitalized",
+      leaveType: "emergency",
+      fromDate: "2024-06-12",
+      toDate: "2024-06-15",
+      course: "Data Structures",
+      courseId: "cse201",
       branch: "Computer Science (CSE)",
+      branchId: "cse",
       semester: "5-1"
     }
   ];
 
-  // Filter leave requests based on search term and filters
+  useEffect(() => {
+    // Reset filters when a new course or branch is selected
+    if (selectedCourse || selectedBranch) {
+      setCurrentTab("pending");
+    }
+  }, [selectedCourse, selectedBranch]);
+
+  // Filter leave requests based on search term, filters, and selected course/branch
   const filteredRequests = leaveRequests.filter(req => {
     // Filter by search term
     const matchesSearch = 
@@ -136,7 +175,13 @@ export const FacultyApproval = () => {
       (currentTab === "all")
     );
     
-    return matchesSearch && matchesStatus && matchesType && matchesTab;
+    // Filter by selected course
+    const matchesCourse = selectedCourse ? req.courseId === selectedCourse : true;
+    
+    // Filter by selected branch
+    const matchesBranch = selectedBranch ? req.branchId === selectedBranch : true;
+    
+    return matchesSearch && matchesStatus && matchesType && matchesTab && matchesCourse && matchesBranch;
   });
 
   const handleViewDetails = (request: LeaveRequest) => {
@@ -172,9 +217,33 @@ export const FacultyApproval = () => {
     }
   };
 
+  const getFilterTitle = () => {
+    if (selectedCourse && selectedBranch) {
+      const matchingRequest = leaveRequests.find(
+        req => req.courseId === selectedCourse && req.branchId === selectedBranch
+      );
+      if (matchingRequest) {
+        return `${matchingRequest.course} (${matchingRequest.branch})`;
+      }
+    } else if (selectedBranch) {
+      const matchingRequest = leaveRequests.find(req => req.branchId === selectedBranch);
+      if (matchingRequest) {
+        return `All courses in ${matchingRequest.branch}`;
+      }
+    }
+    return "All Leave Requests";
+  };
+
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold">Leave Requests</h2>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h2 className="text-xl font-bold">{getFilterTitle()}</h2>
+        {(selectedCourse || selectedBranch) && (
+          <Badge variant="outline" className="px-3 py-1">
+            {selectedCourse ? "Course filtered" : "Branch filtered"}
+          </Badge>
+        )}
+      </div>
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
         <div className="flex flex-col md:flex-row gap-2 w-full">
@@ -242,6 +311,7 @@ export const FacultyApproval = () => {
                           </div>
                           <h4 className="font-medium">{request.title}</h4>
                           <p className="text-sm text-gray-600">Course: {request.course}</p>
+                          <p className="text-sm text-gray-600">Branch: {request.branch}</p>
                           <p className="text-sm text-gray-600">Duration: {request.fromDate} to {request.toDate}</p>
                         </div>
                         <div className="flex flex-col gap-2 items-end">
@@ -307,6 +377,7 @@ export const FacultyApproval = () => {
                           </div>
                           <h4 className="font-medium">{request.title}</h4>
                           <p className="text-sm text-gray-600">Course: {request.course}</p>
+                          <p className="text-sm text-gray-600">Branch: {request.branch}</p>
                           <p className="text-sm text-gray-600">Duration: {request.fromDate} to {request.toDate}</p>
                         </div>
                         <div className="flex flex-col gap-2 items-end">

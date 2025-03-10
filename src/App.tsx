@@ -65,6 +65,11 @@ function App() {
                 <FacultyDashboard />
               </ProtectedRoute>
             } />
+            <Route path="/attendance-overview" element={
+              <ProtectedRoute allowedRoles={["faculty"]}>
+                <FacultyDashboard />
+              </ProtectedRoute>
+            } />
             
             <Route path="*" element={<NotFound />} />
           </Routes>

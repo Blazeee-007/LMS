@@ -38,11 +38,18 @@ export const Header = () => {
     return location.pathname === path;
   };
 
+  // Function to determine home page based on role
+  const getHomePage = () => {
+    if (isAdmin) return "/admin";
+    if (isFaculty) return "/faculty-dashboard";
+    return "/dashboard";
+  };
+
   return (
     <header className="sticky top-0 z-40 border-b bg-background">
       <div className="container flex h-16 items-center justify-between py-4">
         <div className="flex items-center gap-2 md:gap-4">
-          <Link to={isAdmin ? "/admin" : isFaculty ? "/faculty-dashboard" : "/dashboard"} className="flex items-center gap-2">
+          <Link to={getHomePage()} className="flex items-center gap-2">
             <ClipboardList className="h-6 w-6" />
             <span className="font-bold">Leave Management System</span>
           </Link>
