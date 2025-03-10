@@ -1,5 +1,5 @@
 
-export type StatusType = "pending" | "under_review" | "needs_info" | "approved" | "rejected";
+export type StatusType = "pending" | "under_review" | "needs_info" | "approved" | "rejected" | "cancelled";
 export type LeaveType = "medical" | "personal" | "academic" | "emergency";
 
 export interface LeaveRequest {
