@@ -43,6 +43,7 @@ import { DateRangePicker } from "@/components/DateRangePicker";
 import { DateRange } from "react-day-picker";
 import { UserWelcomeCard } from "@/components/UserWelcomeCard";
 import { LeaveBalanceCard } from "@/components/LeaveBalanceCard";
+import { StatusType, LeaveType } from "@/types/leave";
 
 type StatusType = "pending" | "approved" | "rejected" | "under_review" | "needs_info" | "cancelled";
 type LeaveType = "medical" | "personal" | "academic" | "emergency";

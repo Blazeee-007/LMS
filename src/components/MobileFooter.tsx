@@ -26,6 +26,7 @@ export const MobileFooter = () => {
             ? "text-primary font-medium" 
             : "text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
           }`}
+          aria-label="Home"
         >
           <Home className={`h-5 w-5 ${isActive("/") ? "text-primary" : ""}`} />
           <span className="text-xs mt-1">Home</span>
@@ -38,6 +39,7 @@ export const MobileFooter = () => {
             ? "text-primary font-medium" 
             : "text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
           }`}
+          aria-label="Leave Balance"
         >
           <BarChart3 className={`h-5 w-5 ${isActive("/leave-balance") ? "text-primary" : ""}`} />
           <span className="text-xs mt-1">Balance</span>
@@ -46,8 +48,9 @@ export const MobileFooter = () => {
         <Link
           to="/application"
           className="flex flex-col items-center justify-center relative group"
+          aria-label="Apply for Leave"
         >
-          <div className="absolute -top-5 w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-md">
+          <div className="absolute -top-5 w-12 h-12 rounded-full bg-primary flex items-center justify-center shadow-md animate-fadeIn">
             <CalendarClock className="h-6 w-6 text-white" />
           </div>
           <span className={`text-xs mt-7 font-medium ${isActive("/application") ? "text-primary" : "text-gray-600 dark:text-gray-400"}`}>Apply</span>
@@ -55,7 +58,10 @@ export const MobileFooter = () => {
         
         <Sheet>
           <SheetTrigger asChild>
-            <button className="flex flex-col items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors">
+            <button 
+              className="flex flex-col items-center justify-center text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
+              aria-label="Search"
+            >
               <Search className="h-5 w-5" />
               <span className="text-xs mt-1">Search</span>
             </button>
@@ -72,10 +78,10 @@ export const MobileFooter = () => {
               <div className="space-y-2">
                 <h3 className="text-sm font-medium">Quick access</h3>
                 <div className="flex flex-wrap gap-2">
-                  <Button variant="outline" size="sm">Pending leaves</Button>
-                  <Button variant="outline" size="sm">Leave balance</Button>
-                  <Button variant="outline" size="sm">Calendar</Button>
-                  <Button variant="outline" size="sm">New request</Button>
+                  <Button variant="outline" size="sm" className="text-xs">Pending leaves</Button>
+                  <Button variant="outline" size="sm" className="text-xs">Leave balance</Button>
+                  <Button variant="outline" size="sm" className="text-xs">Calendar</Button>
+                  <Button variant="outline" size="sm" className="text-xs">New request</Button>
                 </div>
               </div>
             </div>
@@ -89,6 +95,7 @@ export const MobileFooter = () => {
             ? "text-primary font-medium" 
             : "text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary"
           }`}
+          aria-label="Profile"
         >
           <User className={`h-5 w-5 ${isActive("/profile") ? "text-primary" : ""}`} />
           <span className="text-xs mt-1">Profile</span>

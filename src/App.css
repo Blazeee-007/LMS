@@ -101,6 +101,69 @@
     transform: translateY(10px);
     transition: opacity 200ms, transform 200ms;
   }
+  
+  /* Prevent horizontal overflow */
+  .overflow-x-hidden {
+    overflow-x: hidden;
+  }
+  
+  /* Collapsible sections for mobile */
+  .mobile-collapsible {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+  
+  .mobile-collapsible.open {
+    max-height: 1000px;
+  }
+  
+  /* Mobile-friendly card padding */
+  .card-mobile-friendly {
+    padding: 1rem;
+  }
+  
+  /* Bottom sheet for mobile actions */
+  .bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+    z-index: 50;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+  }
+  
+  .bottom-sheet.open {
+    transform: translateY(0);
+  }
+  
+  /* Floating action button for mobile */
+  .fab {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 10;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .fab:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
 }
 
 /* Animation utilities */
@@ -114,6 +177,14 @@
 
 .animate-expandIn {
   animation: expandIn 0.4s ease-out;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.5s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
 }
 
 @keyframes fadeIn {
@@ -144,6 +215,32 @@
   to {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
   }
 }
 
@@ -210,18 +307,6 @@
   animation: pulse 2s infinite;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(0.95);
-  }
-  70% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(0.95);
-  }
-}
-
 /* Search sheet animations */
 .search-sheet-enter {
   transform: translateY(100%);
@@ -262,5 +347,106 @@
     display: grid;
     grid-template-columns: 3fr 1fr;
     gap: 1.5rem;
+  }
+  
+  /* Desktop-specific refinements */
+  .desktop-sidebar {
+    width: 280px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  
+  .desktop-main {
+    width: calc(100% - 280px);
+    margin-left: auto;
+  }
+  
+  /* Improved table layout for desktop */
+  .responsive-table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .responsive-table th,
+  .responsive-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Enhanced card layouts */
+  .card-hover-effect {
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .card-hover-effect:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Accessibility improvements */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus visible styles */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .page-break {
+    page-break-after: always;
+  }
+  
+  body {
+    font-size: 12pt;
+    color: #000;
+  }
+  
+  a {
+    text-decoration: none;
+    color: #000;
+  }
+  
+  .print-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+/* Loading skeleton animation */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeletonLoading 1.5s infinite;
+}
+
+@keyframes skeletonLoading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
   }
 }

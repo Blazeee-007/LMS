@@ -1,206 +1,210 @@
 
-import { Badge } from "@/components/ui/badge";
-import { Clock, CheckCircle, XCircle, AlertCircle, HelpCircle, Ban } from "lucide-react";
+import React from "react";
+import { CheckCircle, Clock, X, AlertCircle, HelpCircle } from "lucide-react";
 import { StatusType } from "@/types/leave";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 
-interface ApplicationStatusProps {
+export interface ApplicationStatusProps {
   status: StatusType;
 }
 
-export const ApplicationStatus = ({ status }: ApplicationStatusProps) => {
-  switch (status) {
-    case "pending":
-      return (
-        <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-300 flex items-center gap-1">
-          <Clock className="h-3 w-3" />
-          Pending Review
-        </Badge>
-      );
-    case "approved":
-      return (
-        <Badge variant="outline" className="bg-green-50 text-green-800 border-green-300 flex items-center gap-1">
-          <CheckCircle className="h-3 w-3" />
-          Approved
-        </Badge>
-      );
-    case "rejected":
-      return (
-        <Badge variant="outline" className="bg-red-50 text-red-800 border-red-300 flex items-center gap-1">
-          <XCircle className="h-3 w-3" />
-          Rejected
-        </Badge>
-      );
-    case "under_review":
-      return (
-        <Badge variant="outline" className="bg-blue-50 text-blue-800 border-blue-300 flex items-center gap-1">
-          <AlertCircle className="h-3 w-3" />
-          Under Review
-        </Badge>
-      );
-    case "needs_info":
-      return (
-        <Badge variant="outline" className="bg-purple-50 text-purple-800 border-purple-300 flex items-center gap-1">
-          <HelpCircle className="h-3 w-3" />
-          Needs More Info
-        </Badge>
-      );
-    case "cancelled":
-      return (
-        <Badge variant="outline" className="bg-gray-50 text-gray-800 border-gray-300 flex items-center gap-1">
-          <Ban className="h-3 w-3" />
-          Cancelled
-        </Badge>
-      );
-    default:
-      return (
-        <Badge variant="outline" className="bg-gray-50 text-gray-800 border-gray-300 flex items-center gap-1">
-          Unknown Status
-        </Badge>
-      );
-  }
-};
-
-// Add the ApplicationProgress component
-export const ApplicationProgress = ({ status }: ApplicationStatusProps) => {
-  const getStepStatus = (step: string) => {
-    switch (step) {
-      case "submitted":
-        return "completed";
-      case "review":
-        return ["pending", "under_review", "needs_info", "approved", "rejected", "cancelled"].includes(status) 
-          ? "completed" 
-          : "pending";
-      case "approval":
-        return ["approved", "rejected", "cancelled"].includes(status) 
-          ? "completed" 
-          : "pending";
-      case "completed":
-        return status === "approved" ? "completed" : "pending";
+export const ApplicationStatus: React.FC<ApplicationStatusProps> = ({ status }) => {
+  const getStatusConfig = () => {
+    switch (status) {
+      case "pending":
+        return {
+          bgColor: "bg-yellow-100",
+          textColor: "text-yellow-800",
+          icon: <Clock className="h-4 w-4 text-yellow-600 mr-1" />,
+          text: "Pending"
+        };
+      case "approved":
+        return {
+          bgColor: "bg-green-100",
+          textColor: "text-green-800",
+          icon: <CheckCircle className="h-4 w-4 text-green-600 mr-1" />,
+          text: "Approved"
+        };
+      case "rejected":
+        return {
+          bgColor: "bg-red-100",
+          textColor: "text-red-800",
+          icon: <X className="h-4 w-4 text-red-600 mr-1" />,
+          text: "Rejected"
+        };
+      case "under_review":
+        return {
+          bgColor: "bg-blue-100",
+          textColor: "text-blue-800",
+          icon: <Clock className="h-4 w-4 text-blue-600 mr-1" />,
+          text: "Under Review"
+        };
+      case "needs_info":
+        return {
+          bgColor: "bg-purple-100",
+          textColor: "text-purple-800",
+          icon: <HelpCircle className="h-4 w-4 text-purple-600 mr-1" />,
+          text: "Needs Info"
+        };
+      case "cancelled":
+        return {
+          bgColor: "bg-gray-100",
+          textColor: "text-gray-800",
+          icon: <X className="h-4 w-4 text-gray-600 mr-1" />,
+          text: "Cancelled"
+        };
       default:
-        return "pending";
+        return {
+          bgColor: "bg-gray-100",
+          textColor: "text-gray-800",
+          icon: <AlertCircle className="h-4 w-4 text-gray-600 mr-1" />,
+          text: "Unknown"
+        };
     }
   };
 
+  const { bgColor, textColor, icon, text } = getStatusConfig();
+
+  return (
+    <div className={`flex items-center px-3 py-1 rounded-full ${bgColor} ${textColor}`}>
+      {icon}
+      <span className="text-sm font-medium">{text}</span>
+    </div>
+  );
+};
+
+// Export ApplicationProgress component
+export const ApplicationProgress: React.FC<ApplicationStatusProps> = ({ status }) => {
+  const getProgress = () => {
+    switch (status) {
+      case "pending":
+        return 20;
+      case "under_review":
+        return 40;
+      case "needs_info":
+        return 60;
+      case "approved":
+        return 100;
+      case "rejected":
+        return 100;
+      case "cancelled":
+        return 100;
+      default:
+        return 0;
+    }
+  };
+
+  const getColor = () => {
+    switch (status) {
+      case "approved":
+        return "bg-green-500";
+      case "rejected":
+        return "bg-red-500";
+      case "cancelled":
+        return "bg-gray-500";
+      default:
+        return "bg-blue-500";
+    }
+  };
+
+  const progress = getProgress();
+  const color = getColor();
+
   return (
     <div className="w-full">
-      <div className="flex justify-between mb-2">
-        <div className="flex flex-col items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${getStepStatus("submitted") === "completed" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-400"}`}>
-            <CheckCircle className="h-4 w-4" />
-          </div>
-          <span className="text-xs mt-1">Submitted</span>
-        </div>
-        <div className="flex-1 flex items-center">
-          <div className={`h-1 w-full ${getStepStatus("review") === "completed" ? "bg-green-500" : "bg-gray-200"}`}></div>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${getStepStatus("review") === "completed" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-400"}`}>
-            <AlertCircle className="h-4 w-4" />
-          </div>
-          <span className="text-xs mt-1">Review</span>
-        </div>
-        <div className="flex-1 flex items-center">
-          <div className={`h-1 w-full ${getStepStatus("approval") === "completed" ? "bg-green-500" : "bg-gray-200"}`}></div>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${getStepStatus("approval") === "completed" ? status === "approved" ? "bg-green-100 text-green-800" : status === "rejected" ? "bg-red-100 text-red-800" : "bg-gray-100 text-gray-400" : "bg-gray-100 text-gray-400"}`}>
-            {status === "approved" ? <CheckCircle className="h-4 w-4" /> : status === "rejected" ? <XCircle className="h-4 w-4" /> : <Clock className="h-4 w-4" />}
-          </div>
-          <span className="text-xs mt-1">Decision</span>
-        </div>
-        <div className="flex-1 flex items-center">
-          <div className={`h-1 w-full ${getStepStatus("completed") === "completed" ? "bg-green-500" : "bg-gray-200"}`}></div>
-        </div>
-        <div className="flex flex-col items-center">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${getStepStatus("completed") === "completed" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-400"}`}>
-            <CheckCircle className="h-4 w-4" />
-          </div>
-          <span className="text-xs mt-1">Completed</span>
-        </div>
+      <div className="flex justify-between items-center mb-1 text-xs text-gray-500">
+        <span>Applied</span>
+        <span>Under Review</span>
+        <span>Final Decision</span>
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2">
+        <div
+          className={`${color} h-2 rounded-full transition-all duration-500 ease-out`}
+          style={{ width: `${progress}%` }}
+        ></div>
       </div>
     </div>
   );
 };
 
-// Add the ApprovalWorkflow component
-interface Approver {
-  role: string;
-  name: string;
-  status: "pending" | "approved" | "rejected";
-}
-
-interface Comment {
-  author: string;
-  text: string;
-  date: string;
-}
-
-interface ApprovalWorkflowProps {
-  status: StatusType;
-  approvers: Approver[];
-  comments: Comment[];
-  dueDate: string;
-}
-
-export const ApprovalWorkflow = ({ status, approvers, comments, dueDate }: ApprovalWorkflowProps) => {
+// Export ApprovalWorkflow component
+export const ApprovalWorkflow: React.FC<ApplicationStatusProps> = ({ status }) => {
   return (
-    <Card className="p-4">
-      <h3 className="font-semibold mb-2">Approval Workflow</h3>
-      <p className="text-sm text-gray-500 mb-4">Due by: {dueDate}</p>
-      
-      <div className="space-y-4">
-        {approvers.map((approver, index) => (
-          <div key={index} className="flex items-start gap-3">
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center mt-1 
-              ${approver.status === "approved" ? "bg-green-100 text-green-800" : 
-                approver.status === "rejected" ? "bg-red-100 text-red-800" : 
-                "bg-gray-100 text-gray-500"}`}
-            >
-              {approver.status === "approved" ? (
-                <CheckCircle className="h-4 w-4" />
-              ) : approver.status === "rejected" ? (
-                <XCircle className="h-4 w-4" />
-              ) : (
-                <Clock className="h-4 w-4" />
-              )}
-            </div>
-            <div className="flex-1">
-              <p className="font-medium">{approver.name}</p>
-              <p className="text-sm text-gray-500">{approver.role.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</p>
-            </div>
-            <Badge 
-              variant="outline" 
-              className={
-                approver.status === "approved" ? "bg-green-50 text-green-800 border-green-300" : 
-                approver.status === "rejected" ? "bg-red-50 text-red-800 border-red-300" : 
-                "bg-yellow-50 text-yellow-800 border-yellow-300"
-              }
-            >
-              {approver.status.charAt(0).toUpperCase() + approver.status.slice(1)}
-            </Badge>
-          </div>
-        ))}
+    <div className="flex flex-col space-y-4">
+      <div className="flex items-center">
+        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 mr-3">
+          <CheckCircle className="h-5 w-5" />
+        </div>
+        <div className="flex-1">
+          <p className="font-medium">Application Submitted</p>
+          <p className="text-sm text-gray-500">Application has been received</p>
+        </div>
       </div>
-      
-      {comments.length > 0 && (
-        <>
-          <Separator className="my-4" />
-          <h3 className="font-semibold mb-2">Comments</h3>
-          <div className="space-y-3">
-            {comments.map((comment, index) => (
-              <div key={index} className="bg-gray-50 p-3 rounded-md">
-                <div className="flex justify-between mb-1">
-                  <p className="font-medium">{comment.author}</p>
-                  <p className="text-sm text-gray-500">{comment.date}</p>
-                </div>
-                <p className="text-sm">{comment.text}</p>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-    </Card>
+
+      <div className="w-px h-6 bg-gray-300 ml-4"></div>
+
+      <div className="flex items-center">
+        <div className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${
+          status === "pending" || status === "under_review" || status === "needs_info" || status === "approved" || status === "rejected"
+            ? "bg-blue-100 text-blue-600"
+            : "bg-gray-100 text-gray-400"
+        }`}>
+          <Clock className="h-5 w-5" />
+        </div>
+        <div className="flex-1">
+          <p className={`font-medium ${
+            status === "pending" || status === "under_review" || status === "needs_info" || status === "approved" || status === "rejected"
+              ? ""
+              : "text-gray-400"
+          }`}>Under Review</p>
+          <p className="text-sm text-gray-500">Your application is being reviewed</p>
+        </div>
+      </div>
+
+      <div className="w-px h-6 bg-gray-300 ml-4"></div>
+
+      <div className="flex items-center">
+        <div className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${
+          status === "approved"
+            ? "bg-green-100 text-green-600"
+            : status === "rejected"
+              ? "bg-red-100 text-red-600"
+              : status === "cancelled"
+                ? "bg-gray-100 text-gray-600"
+                : "bg-gray-100 text-gray-400"
+        }`}>
+          {status === "approved" ? (
+            <CheckCircle className="h-5 w-5" />
+          ) : status === "rejected" ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <AlertCircle className="h-5 w-5" />
+          )}
+        </div>
+        <div className="flex-1">
+          <p className={`font-medium ${
+            status === "approved" || status === "rejected" || status === "cancelled"
+              ? ""
+              : "text-gray-400"
+          }`}>
+            {status === "approved"
+              ? "Approved"
+              : status === "rejected"
+                ? "Rejected"
+                : status === "cancelled"
+                  ? "Cancelled"
+                  : "Decision Pending"}
+          </p>
+          <p className="text-sm text-gray-500">
+            {status === "approved"
+              ? "Your leave has been approved"
+              : status === "rejected"
+                ? "Your leave has been rejected"
+                : status === "cancelled"
+                  ? "Your application has been cancelled"
+                  : "Waiting for final decision"}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 };
