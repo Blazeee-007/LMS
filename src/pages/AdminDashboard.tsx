@@ -1,3 +1,4 @@
+
 import { Header } from "@/components/Header";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
@@ -350,7 +351,7 @@ const AdminDashboard = () => {
                               {application.status === "pending" && (
                                 <>
                                   <Button
-                                    variant="primary"
+                                    variant="default"
                                     size="sm"
                                     onClick={() => handleApproveApplication(application.id)}
                                     disabled={isLoading}
@@ -467,7 +468,7 @@ const AdminDashboard = () => {
                           {selectedApplication.status === "pending" && (
                             <div className="flex justify-end">
                               <Button
-                                variant="primary"
+                                variant="default"
                                 onClick={() => {
                                   handleApproveApplication(selectedApplication.id);
                                   setShowDetailsDialog(false);

@@ -43,18 +43,15 @@ import { DateRangePicker } from "@/components/DateRangePicker";
 import { DateRange } from "react-day-picker";
 import { UserWelcomeCard } from "@/components/UserWelcomeCard";
 import { LeaveBalanceCard } from "@/components/LeaveBalanceCard";
-import { StatusType, LeaveType } from "@/types/leave";
-
-type StatusType = "pending" | "approved" | "rejected" | "under_review" | "needs_info" | "cancelled";
-type LeaveType = "medical" | "personal" | "academic" | "emergency";
+import { StatusType as LeaveStatusType, LeaveType as LeaveCategory, getLeaveTypeColor } from "@/types/leave";
 
 interface Application {
   id: number;
   date: string;
-  status: StatusType;
+  status: LeaveStatusType;
   title: string;
   reason: string;
-  leaveType: LeaveType;
+  leaveType: LeaveCategory;
   fromDate: string;
   toDate: string;
   course: string;
@@ -70,8 +67,8 @@ const Dashboard = () => {
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<StatusType | "all">("all");
-  const [typeFilter, setTypeFilter] = useState<LeaveType | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<LeaveStatusType | "all">("all");
+  const [typeFilter, setTypeFilter] = useState<LeaveCategory | "all">("all");
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [activeTab, setActiveTab] = useState("all");
 
@@ -237,16 +234,6 @@ const Dashboard = () => {
   const approvedLeaves = applications.filter(app => app.status === "approved").length;
   const pendingLeaves = applications.filter(app => ["pending", "under_review", "needs_info"].includes(app.status)).length;
   const rejectedLeaves = applications.filter(app => app.status === "rejected").length;
-
-  const getLeaveTypeColor = (type: LeaveType) => {
-    switch (type) {
-      case "medical": return "bg-red-100 text-red-800";
-      case "personal": return "bg-blue-100 text-blue-800";
-      case "academic": return "bg-purple-100 text-purple-800";
-      case "emergency": return "bg-orange-100 text-orange-800";
-      default: return "bg-gray-100 text-gray-800";
-    }
-  };
 
   const upcomingLeaves = applications
     .filter(app => 
@@ -438,7 +425,7 @@ const Dashboard = () => {
               </div>
               <div className="flex flex-wrap gap-2">
                 <div className="w-40">
-                  <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as StatusType | "all")}>
+                  <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as LeaveStatusType | "all")}>
                     <SelectTrigger>
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
@@ -454,7 +441,7 @@ const Dashboard = () => {
                   </Select>
                 </div>
                 <div className="w-40">
-                  <Select value={typeFilter} onValueChange={(value) => setTypeFilter(value as LeaveType | "all")}>
+                  <Select value={typeFilter} onValueChange={(value) => setTypeFilter(value as LeaveCategory | "all")}>
                     <SelectTrigger>
                       <SelectValue placeholder="Type" />
                     </SelectTrigger>
