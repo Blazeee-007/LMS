@@ -16,8 +16,9 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { ApplicationStatus, ApprovalWorkflow, type StatusType } from "@/components/ApplicationStatus";
+import { ApplicationStatus, ApprovalWorkflow } from "@/components/ApplicationStatus";
 import { LeaveStatistics } from "@/components/LeaveStatistics";
+import { StatusType, LeaveType } from "@/types/leave";
 import { 
   Dialog,
   DialogContent,
