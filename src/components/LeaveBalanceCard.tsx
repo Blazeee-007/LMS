@@ -9,14 +9,20 @@ interface LeaveBalance {
   used: number;
   total: number;
   color: string;
+  warningThreshold?: number;
 }
 
 interface LeaveBalanceCardProps {
   balances: LeaveBalance[];
   warningThreshold?: number;
+  className?: string; // Add className prop
 }
 
-export const LeaveBalanceCard = ({ balances, warningThreshold = 80 }: LeaveBalanceCardProps) => {
+export const LeaveBalanceCard = ({ 
+  balances, 
+  warningThreshold = 80, 
+  className = "" 
+}: LeaveBalanceCardProps) => {
   const getTotalUsed = () => {
     return balances.reduce((sum, balance) => sum + balance.used, 0);
   };
@@ -37,11 +43,11 @@ export const LeaveBalanceCard = ({ balances, warningThreshold = 80 }: LeaveBalan
 
   // Check if any leave type is close to exhaustion
   const lowBalanceWarning = balances.find(balance => 
-    ((balance.used / balance.total) * 100) >= warningThreshold
+    ((balance.used / balance.total) * 100) >= (balance.warningThreshold || warningThreshold)
   );
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center">
           <Calendar className="h-5 w-5 mr-2" />
@@ -59,29 +65,32 @@ export const LeaveBalanceCard = ({ balances, warningThreshold = 80 }: LeaveBalan
         )}
         
         <div className="space-y-4">
-          {balances.map((balance, idx) => (
-            <div key={idx}>
-              <div className="flex justify-between items-center mb-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">{getTypeName(balance.type)}</span>
-                  {((balance.used / balance.total) * 100) >= warningThreshold && (
-                    <Badge variant="warning" className="text-xs">
-                      Low Balance
-                    </Badge>
-                  )}
+          {balances.map((balance, idx) => {
+            const thresholdToUse = balance.warningThreshold || warningThreshold;
+            return (
+              <div key={idx}>
+                <div className="flex justify-between items-center mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium">{getTypeName(balance.type)}</span>
+                    {((balance.used / balance.total) * 100) >= thresholdToUse && (
+                      <Badge variant="warning" className="text-xs">
+                        Low Balance
+                      </Badge>
+                    )}
+                  </div>
+                  <span className="text-sm font-medium">
+                    {balance.used}/{balance.total} days used
+                  </span>
                 </div>
-                <span className="text-sm font-medium">
-                  {balance.used}/{balance.total} days used
-                </span>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div 
+                    className={`h-2 rounded-full ${balance.color}`} 
+                    style={{ width: `${(balance.used / balance.total) * 100}%` }}
+                  />
+                </div>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className={`h-2 rounded-full ${balance.color}`} 
-                  style={{ width: `${(balance.used / balance.total) * 100}%` }}
-                />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         
         <div className="pt-3 mt-2 border-t border-gray-200">

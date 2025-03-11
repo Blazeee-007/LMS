@@ -1,14 +1,27 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, Calendar, CheckCircle, XCircle } from "lucide-react";
-import { LeaveApplication } from "@/types/leave";
+import { StatusType, LeaveType } from "@/types/leave";
 import { motion } from "framer-motion";
+
+// Define the LeaveApplication interface locally since it's not exported from @/types/leave
+interface LeaveApplication {
+  id: number;
+  title: string;
+  leaveType: LeaveType;
+  fromDate: string;
+  toDate: string;
+  status: StatusType;
+  reason: string;
+  days: number;
+}
 
 interface LeaveStatisticsCardProps {
   applications: LeaveApplication[];
+  className?: string; // Add className prop to support styling
 }
 
-export const LeaveStatisticsCard = ({ applications }: LeaveStatisticsCardProps) => {
+export const LeaveStatisticsCard = ({ applications, className = "" }: LeaveStatisticsCardProps) => {
   const approved = applications.filter(app => app.status === "approved").length;
   const rejected = applications.filter(app => app.status === "rejected").length;
   const pending = applications.filter(
@@ -17,7 +30,7 @@ export const LeaveStatisticsCard = ({ applications }: LeaveStatisticsCardProps) 
   const total = applications.length;
 
   return (
-    <Card className="hover:shadow-lg transition-shadow">
+    <Card className={`hover:shadow-lg transition-shadow ${className}`}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BarChart3 className="h-5 w-5 text-primary" />
@@ -83,14 +96,14 @@ export const LeaveStatisticsCard = ({ applications }: LeaveStatisticsCardProps) 
           <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: `${(approved / total) * 100}%` }}
+              animate={{ width: `${total > 0 ? (approved / total) * 100 : 0}%` }}
               transition={{ duration: 0.5, delay: 0.4 }}
               className="h-full bg-green-500"
             />
           </div>
           <div className="flex justify-between text-xs text-gray-500">
             <span>Approval Rate</span>
-            <span>{Math.round((approved / total) * 100)}%</span>
+            <span>{total > 0 ? Math.round((approved / total) * 100) : 0}%</span>
           </div>
         </div>
       </CardContent>
