@@ -13,9 +13,10 @@ interface LeaveEvent {
 
 interface LeaveCalendarPreviewProps {
   leaves: LeaveEvent[];
+  onDateSelect?: (date: Date | undefined) => void;
 }
 
-export const LeaveCalendarPreview = ({ leaves }: LeaveCalendarPreviewProps) => {
+export const LeaveCalendarPreview = ({ leaves, onDateSelect }: LeaveCalendarPreviewProps) => {
   const today = new Date();
   const startDate = startOfWeek(today, { weekStartsOn: 1 }); // Monday as the start of week
   
@@ -42,11 +43,21 @@ export const LeaveCalendarPreview = ({ leaves }: LeaveCalendarPreviewProps) => {
     }
   };
   
+  // Handle day click
+  const handleDayClick = (day: Date) => {
+    if (onDateSelect) {
+      onDateSelect(day);
+    }
+  };
+  
   // Format date for display
   const formatDate = (date: Date) => {
     const isToday = date.toDateString() === today.toDateString();
     return (
-      <div className={`text-center ${isToday ? "font-bold" : ""}`}>
+      <div 
+        className={`text-center ${isToday ? "font-bold" : ""} cursor-pointer hover:bg-gray-100 rounded-md p-1`}
+        onClick={() => handleDayClick(date)}
+      >
         <div className="text-xs text-gray-500">{format(date, 'EEE')}</div>
         <div className={`text-sm ${isToday ? "bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center mx-auto" : ""}`}>
           {format(date, 'd')}

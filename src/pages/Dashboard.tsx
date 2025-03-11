@@ -35,8 +35,15 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-// Renamed to avoid conflicts
-import { StatusType as LeaveStatusType, LeaveType as LeaveCategory } from '@/types/leave';
+// We're renaming the imported types to avoid conflicts
+import { 
+  StatusType as StatusTypeImport, 
+  LeaveType as LeaveTypeImport 
+} from '@/types/leave';
+
+// Now define local aliases to use in this file
+type LeaveStatusType = StatusTypeImport;
+type LeaveCategory = LeaveTypeImport;
 
 interface LeaveApplication {
   id: number;
@@ -166,14 +173,28 @@ const Dashboard = () => {
     }
   };
 
+  const leaveBalances = [
+    { type: "medical", used: 3, total: 10, color: "bg-red-400" },
+    { type: "personal", used: 5, total: 7, color: "bg-blue-400" },
+    { type: "academic", used: 1, total: 5, color: "bg-purple-400" },
+    { type: "emergency", used: 0, total: 3, color: "bg-orange-400" },
+  ];
+
+  const pendingRequests = leaveApplications.filter(leave => 
+    leave.status === "pending" || leave.status === "under_review"
+  ).length;
+
   return (
     <div className="min-h-screen bg-gray-50 pb-mobile-footer">
       <Header />
       <div className="container py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="col-span-2 space-y-6">
-            <UserWelcomeCard />
-            <LeaveBalanceCard />
+            <UserWelcomeCard 
+              upcomingLeaveCount={upcomingLeaves.length} 
+              pendingApprovalCount={pendingRequests} 
+            />
+            <LeaveBalanceCard balances={leaveBalances} />
 
             <Card>
               <CardHeader className="pb-3">
@@ -274,7 +295,16 @@ const Dashboard = () => {
           </div>
 
           <div className="space-y-6">
-            <LeaveCalendarPreview onDateSelect={handleDateSelect} />
+            <LeaveCalendarPreview 
+              leaves={leaveApplications.map(leave => ({
+                id: leave.id,
+                title: leave.title,
+                fromDate: leave.fromDate,
+                toDate: leave.toDate,
+                leaveType: leave.leaveType,
+                status: leave.status
+              }))}
+            />
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg">Quick Actions</CardTitle>
@@ -299,14 +329,11 @@ const Dashboard = () => {
       <MobileFooter />
 
       <Dialog open={isApplying} onOpenChange={setIsApplying}>
-        <DialogTrigger asChild>
-          <Button variant="outline">Apply Leave</Button>
-        </DialogTrigger>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Leave Application Form</DialogTitle>
           </DialogHeader>
-          <ApplicationForm onClose={() => setIsApplying(false)} />
+          <ApplicationForm />
         </DialogContent>
       </Dialog>
     </div>
