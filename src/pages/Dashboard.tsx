@@ -1,3 +1,4 @@
+
 // Import statements should be fixed to avoid conflicts with local declarations
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
@@ -173,11 +174,12 @@ const Dashboard = () => {
     }
   };
 
+  // Fix the type here: explicitly type as LeaveCategory 
   const leaveBalances = [
-    { type: "medical", used: 3, total: 10, color: "bg-red-400" },
-    { type: "personal", used: 5, total: 7, color: "bg-blue-400" },
-    { type: "academic", used: 1, total: 5, color: "bg-purple-400" },
-    { type: "emergency", used: 0, total: 3, color: "bg-orange-400" },
+    { type: "medical" as LeaveCategory, used: 3, total: 10, color: "bg-red-400" },
+    { type: "personal" as LeaveCategory, used: 5, total: 7, color: "bg-blue-400" },
+    { type: "academic" as LeaveCategory, used: 1, total: 5, color: "bg-purple-400" },
+    { type: "emergency" as LeaveCategory, used: 0, total: 3, color: "bg-orange-400" },
   ];
 
   const pendingRequests = leaveApplications.filter(leave => 
