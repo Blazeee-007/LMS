@@ -1,4 +1,3 @@
-
 // Import statements should be fixed to avoid conflicts with local declarations
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
@@ -57,7 +56,7 @@ interface LeaveApplication {
   days: number;
 }
 
-const Dashboard = () => {
+export const Dashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [leaveApplications, setLeaveApplications] = useState<LeaveApplication[]>([]);
@@ -174,12 +173,12 @@ const Dashboard = () => {
     }
   };
 
-  // Fix the type here: explicitly type as LeaveCategory 
+  // Fix the type here and add thresholds to display warnings earlier
   const leaveBalances = [
-    { type: "medical" as LeaveCategory, used: 3, total: 10, color: "bg-red-400" },
-    { type: "personal" as LeaveCategory, used: 5, total: 7, color: "bg-blue-400" },
-    { type: "academic" as LeaveCategory, used: 1, total: 5, color: "bg-purple-400" },
-    { type: "emergency" as LeaveCategory, used: 0, total: 3, color: "bg-orange-400" },
+    { type: "medical" as LeaveCategory, used: 3, total: 10, color: "bg-red-400", warningThreshold: 70 },
+    { type: "personal" as LeaveCategory, used: 5, total: 7, color: "bg-blue-400", warningThreshold: 75 },
+    { type: "academic" as LeaveCategory, used: 1, total: 5, color: "bg-purple-400", warningThreshold: 80 },
+    { type: "emergency" as LeaveCategory, used: 0, total: 3, color: "bg-orange-400", warningThreshold: 50 },
   ];
 
   const pendingRequests = leaveApplications.filter(leave => 
@@ -187,7 +186,7 @@ const Dashboard = () => {
   ).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-mobile-footer">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-mobile-footer">
       <Header />
       <div className="container py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -196,7 +195,11 @@ const Dashboard = () => {
               upcomingLeaveCount={upcomingLeaves.length} 
               pendingApprovalCount={pendingRequests} 
             />
-            <LeaveBalanceCard balances={leaveBalances} />
+            <LeaveBalanceCard 
+              balances={leaveBalances} 
+              warningThreshold={70}
+              className="animate-fade-in"
+            />
 
             <Card>
               <CardHeader className="pb-3">
