@@ -70,6 +70,8 @@ export const ApplicationForm = () => {
     email: "",
     phone: "",
     notificationMethods: [] as ('email' | 'push' | 'sms' | 'call')[],
+    parentPhone: "",
+    sendParentNotification: false,
   });
 
   const [documents, setDocuments] = useState<File[]>([]);
@@ -171,6 +173,13 @@ export const ApplicationForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleParentNotificationChange = (checked: boolean) => {
+    setFormData((prev) => ({
+      ...prev,
+      sendParentNotification: checked
+    }));
+  };
+
   const handleNotificationMethodChange = (method: 'email' | 'push' | 'sms' | 'call', checked: boolean) => {
     setFormData((prev) => {
       if (checked) {
@@ -210,6 +219,20 @@ export const ApplicationForm = () => {
           recipient: formData.notificationMethods.includes('email') ? formData.email : 
                     formData.notificationMethods.includes('sms') || formData.notificationMethods.includes('call') ? 
                     formData.phone : undefined
+        });
+      }
+
+      if (formData.sendParentNotification && formData.parentPhone) {
+        sendNotification({
+          methods: ['sms'],
+          title: "Student Leave Application",
+          message: `${formData.studentName} (ID: ${formData.studentId}) has applied for ${formData.leaveType} leave from ${formData.fromDate} to ${formData.toDate}.`,
+          parentContact: formData.parentPhone
+        });
+
+        toast({
+          title: "Parent Notification Sent",
+          description: `An SMS notification has been sent to ${formData.parentPhone}`,
         });
       }
       
@@ -343,6 +366,38 @@ export const ApplicationForm = () => {
               />
               {errors.phone && (
                 <p className="text-sm text-red-500">{errors.phone}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="parent-notification" 
+                  checked={formData.sendParentNotification}
+                  onCheckedChange={(checked) => 
+                    handleParentNotificationChange(checked as boolean)}
+                />
+                <Label htmlFor="parent-notification" className="flex items-center">
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Send SMS notification to parent/guardian
+                </Label>
+              </div>
+              {formData.sendParentNotification && (
+                <div className="pl-6 pt-2">
+                  <Label htmlFor="parentPhone">Parent's Phone Number</Label>
+                  <Input
+                    id="parentPhone"
+                    name="parentPhone"
+                    type="tel"
+                    value={formData.parentPhone}
+                    onChange={handleInputChange}
+                    placeholder="Parent's 10-digit phone number"
+                    className={errors.parentPhone ? "border-red-500" : ""}
+                  />
+                  {errors.parentPhone && (
+                    <p className="text-sm text-red-500">{errors.parentPhone}</p>
+                  )}
+                </div>
               )}
             </div>
           </div>
@@ -703,6 +758,15 @@ export const ApplicationForm = () => {
                     {formData.phone && `Phone: ${formData.phone}`}
                   </p>
                 </div>
+                
+                {formData.sendParentNotification && formData.parentPhone && (
+                  <div>
+                    <p className="text-sm font-medium">Parent Notification:</p>
+                    <p className="text-sm">
+                      SMS notification will be sent to: {formData.parentPhone}
+                    </p>
+                  </div>
+                )}
                 
                 <div>
                   <p className="text-sm font-medium">Notification Preferences:</p>

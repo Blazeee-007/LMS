@@ -1,4 +1,3 @@
-
 export type StatusType = "pending" | "under_review" | "needs_info" | "approved" | "rejected" | "cancelled";
 export type LeaveType = "medical" | "personal" | "academic" | "emergency";
 
@@ -19,6 +18,8 @@ export interface LeaveRequest {
   branchId?: string;
   semester: string;
   attachments?: string[];
+  parentNotified?: boolean;
+  parentPhone?: string;
 }
 
 export const getLeaveTypeColor = (type: LeaveType) => {
@@ -31,7 +32,6 @@ export const getLeaveTypeColor = (type: LeaveType) => {
   }
 };
 
-// Mock data for leave requests
 export const mockLeaveRequests: LeaveRequest[] = [
   {
     id: 1,
@@ -48,7 +48,9 @@ export const mockLeaveRequests: LeaveRequest[] = [
     courseId: "cse201",
     branch: "Computer Science (CSE)",
     branchId: "cse",
-    semester: "5-1"
+    semester: "5-1",
+    parentNotified: true,
+    parentPhone: "9876543210"
   },
   {
     id: 2,
@@ -119,4 +121,3 @@ export const mockLeaveRequests: LeaveRequest[] = [
     semester: "5-1"
   }
 ];
-

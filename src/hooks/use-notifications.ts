@@ -6,11 +6,12 @@ interface NotificationConfig {
   title: string;
   message: string;
   recipient?: string;
+  parentContact?: string; // Added for parent notifications
 }
 
 export const useNotifications = () => {
   const sendNotification = (config: NotificationConfig) => {
-    const { methods, title, message, recipient } = config;
+    const { methods, title, message, recipient, parentContact } = config;
     
     console.log(`Sending notification: ${title}`);
     
@@ -43,6 +44,12 @@ export const useNotifications = () => {
     // Send SMS notification
     if (methods.includes('sms') && recipient) {
       console.log(`💬 Sending SMS to ${recipient}: ${message}`);
+      // In a real implementation, this would call an SMS service API like Twilio
+    }
+    
+    // Send parent notification SMS
+    if (parentContact) {
+      console.log(`💬 Sending parent notification SMS to ${parentContact}: Your ward has applied for leave - ${message}`);
       // In a real implementation, this would call an SMS service API like Twilio
     }
     
