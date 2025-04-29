@@ -1,7 +1,7 @@
 
 import React from "react";
+import { X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { LeaveRequest } from "@/types/leave";
 import {
@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface ApprovalActionDialogProps {
   open: boolean;
@@ -34,41 +35,70 @@ export const ApprovalActionDialog = ({
 }: ApprovalActionDialogProps) => {
   if (!selectedRequest || !approvalAction) return null;
 
+  const isApprove = approvalAction === "approve";
+  const actionText = isApprove ? "approve" : "reject";
+  const actionTextCap = isApprove ? "Approve" : "Reject";
+  const buttonVariant = isApprove ? "default" : "destructive";
+  const icon = isApprove ? <Check className="h-4 w-4 mr-1" /> : <X className="h-4 w-4 mr-1" />;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {approvalAction === "approve" ? "Approve Leave Request" : "Reject Leave Request"}
+            {actionTextCap} Leave Request
           </DialogTitle>
           <DialogDescription>
-            {approvalAction === "approve" ? "Confirm approval of leave request" : "Provide a reason for rejection"}
+            You are about to {actionText} the leave request from {selectedRequest.studentName}.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 py-2">
-          <div className="space-y-2">
-            <Label htmlFor="comment">
-              {approvalAction === "approve" ? "Approval Comment (Optional)" : "Reason for Rejection"}
-            </Label>
-            <Textarea
-              id="comment"
-              placeholder={approvalAction === "approve" ? "Add any comments..." : "Provide reason for rejection..."}
-              value={approvalComment}
-              onChange={(e) => setApprovalComment(e.target.value)}
-              className="min-h-[100px]"
-            />
-          </div>
+        
+        <div className="py-4">
+          <Alert>
+            <AlertDescription>
+              {isApprove ? (
+                <>
+                  By approving this request, you are confirming that the student is permitted to be absent 
+                  from {selectedRequest.fromDate} to {selectedRequest.toDate}.
+                </>
+              ) : (
+                <>
+                  By rejecting this request, you are denying the student's leave application. 
+                  Please provide a reason for rejection below.
+                </>
+              )}
+            </AlertDescription>
+          </Alert>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        
+        <div className="space-y-2">
+          <label htmlFor="comment" className="text-sm font-medium">
+            Comments {!isApprove && <span className="text-red-500">*</span>}
+          </label>
+          <Textarea
+            id="comment"
+            placeholder={isApprove ? "Optional comments..." : "Reason for rejection..."}
+            value={approvalComment}
+            onChange={(e) => setApprovalComment(e.target.value)}
+            className="min-h-24"
+          />
+        </div>
+
+        <DialogFooter className="sm:justify-between">
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+          >
             Cancel
           </Button>
-          <Button 
-            variant={approvalAction === "approve" ? "default" : "destructive"}
+          <Button
+            type="submit"
+            variant={buttonVariant}
             onClick={onSubmit}
-            disabled={approvalAction === "reject" && !approvalComment.trim()}
+            disabled={!isApprove && !approvalComment.trim()}
           >
-            {approvalAction === "approve" ? "Approve" : "Reject"}
+            {icon}
+            {actionTextCap}
           </Button>
         </DialogFooter>
       </DialogContent>

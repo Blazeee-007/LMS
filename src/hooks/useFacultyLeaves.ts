@@ -1,7 +1,8 @@
 
 import { useState, useEffect } from "react";
-import { LeaveRequest, mockLeaveRequests } from "@/types/leave";
-import { useToast } from "@/components/ui/use-toast";
+import { LeaveRequest, mockLeaveRequests, StatusType } from "@/types/leave";
+import { useToast } from "@/hooks/use-toast";
+import { useNotifications } from "@/hooks/use-notifications";
 
 interface UseFacultyLeavesProps {
   selectedCourse: string | null;
@@ -10,6 +11,7 @@ interface UseFacultyLeavesProps {
 
 export const useFacultyLeaves = ({ selectedCourse, selectedBranch }: UseFacultyLeavesProps) => {
   const { toast } = useToast();
+  const { sendNotification } = useNotifications();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
@@ -19,10 +21,8 @@ export const useFacultyLeaves = ({ selectedCourse, selectedBranch }: UseFacultyL
   const [showApprovalDialog, setShowApprovalDialog] = useState(false);
   const [approvalAction, setApprovalAction] = useState<"approve" | "reject" | null>(null);
   const [approvalComment, setApprovalComment] = useState("");
+  const [leaveRequests, setLeaveRequests] = useState(mockLeaveRequests);
   
-  // In a real app, this would be an API call
-  const leaveRequests = mockLeaveRequests;
-
   useEffect(() => {
     // Reset filters when a new course or branch is selected
     if (selectedCourse || selectedBranch) {
@@ -74,11 +74,42 @@ export const useFacultyLeaves = ({ selectedCourse, selectedBranch }: UseFacultyL
 
   const submitApprovalAction = () => {
     if (selectedRequest && approvalAction) {
+      // Update the leave request status
+      const updatedRequests = leaveRequests.map(req => {
+        if (req.id === selectedRequest.id) {
+          const newStatus: StatusType = approvalAction === "approve" ? "approved" : "rejected";
+          return { ...req, status: newStatus };
+        }
+        return req;
+      });
+      
+      setLeaveRequests(updatedRequests);
+      
       const actionText = approvalAction === "approve" ? "approved" : "rejected";
+      
+      // Show toast notification
       toast({
         title: `Leave request ${actionText}`,
         description: `You have ${actionText} the leave request from ${selectedRequest.studentName}.`,
       });
+      
+      // Send notification to student
+      sendNotification({
+        methods: ['push'],
+        title: `Leave Request ${actionText.charAt(0).toUpperCase() + actionText.slice(1)}`,
+        message: `Your leave request has been ${actionText} by the faculty.`
+      });
+      
+      // Send notification to parent if available
+      if (selectedRequest.parentPhone) {
+        sendNotification({
+          methods: ['sms'],
+          title: `Leave Request Update`,
+          message: `Your ward's leave request has been ${actionText} by the faculty.`,
+          recipient: selectedRequest.parentPhone
+        });
+      }
+      
       setShowApprovalDialog(false);
     }
   };
