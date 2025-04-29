@@ -22,6 +22,7 @@ export const useFacultyLeaves = ({ selectedCourse, selectedBranch }: UseFacultyL
   const [approvalAction, setApprovalAction] = useState<"approve" | "reject" | null>(null);
   const [approvalComment, setApprovalComment] = useState("");
   const [leaveRequests, setLeaveRequests] = useState(mockLeaveRequests);
+  const [isSubmittingApproval, setIsSubmittingApproval] = useState(false);
   
   useEffect(() => {
     // Reset filters when a new course or branch is selected
@@ -72,45 +73,56 @@ export const useFacultyLeaves = ({ selectedCourse, selectedBranch }: UseFacultyL
     setShowApprovalDialog(true);
   };
 
-  const submitApprovalAction = () => {
+  const submitApprovalAction = (sendEmail: boolean = true) => {
     if (selectedRequest && approvalAction) {
-      // Update the leave request status
-      const updatedRequests = leaveRequests.map(req => {
-        if (req.id === selectedRequest.id) {
-          const newStatus: StatusType = approvalAction === "approve" ? "approved" : "rejected";
-          return { ...req, status: newStatus };
-        }
-        return req;
-      });
+      setIsSubmittingApproval(true);
       
-      setLeaveRequests(updatedRequests);
-      
-      const actionText = approvalAction === "approve" ? "approved" : "rejected";
-      
-      // Show toast notification
-      toast({
-        title: `Leave request ${actionText}`,
-        description: `You have ${actionText} the leave request from ${selectedRequest.studentName}.`,
-      });
-      
-      // Send notification to student
-      sendNotification({
-        methods: ['push'],
-        title: `Leave Request ${actionText.charAt(0).toUpperCase() + actionText.slice(1)}`,
-        message: `Your leave request has been ${actionText} by the faculty.`
-      });
-      
-      // Send notification to parent if available
-      if (selectedRequest.parentPhone) {
-        sendNotification({
-          methods: ['sms'],
-          title: `Leave Request Update`,
-          message: `Your ward's leave request has been ${actionText} by the faculty.`,
-          recipient: selectedRequest.parentPhone
+      // Simulate a network request
+      setTimeout(() => {
+        // Update the leave request status
+        const updatedRequests = leaveRequests.map(req => {
+          if (req.id === selectedRequest.id) {
+            const newStatus: StatusType = approvalAction === "approve" ? "approved" : "rejected";
+            return { ...req, status: newStatus };
+          }
+          return req;
         });
-      }
-      
-      setShowApprovalDialog(false);
+        
+        setLeaveRequests(updatedRequests);
+        
+        const actionText = approvalAction === "approve" ? "approved" : "rejected";
+        
+        // Show toast notification
+        toast({
+          title: `Leave request ${actionText}`,
+          description: `You have successfully ${actionText} the leave request from ${selectedRequest.studentName}.`,
+          variant: approvalAction === "approve" ? "default" : "destructive",
+        });
+        
+        // Send notification to student
+        const notificationMethods = ['push'];
+        if (sendEmail) {
+          notificationMethods.push('email');
+        }
+        
+        sendNotification({
+          methods: notificationMethods as any,
+          title: `Leave Request ${actionText.charAt(0).toUpperCase() + actionText.slice(1)}`,
+          message: `Your leave request has been ${actionText} by the faculty.${approvalComment ? ` Comment: ${approvalComment}` : ''}`
+        });
+        
+        // Send notification to parent if available
+        if (selectedRequest.parentPhone) {
+          sendNotification({
+            methods: ['sms'],
+            title: `Leave Request Update`,
+            message: `Your ward's leave request has been ${actionText} by the faculty.${approvalComment ? ` Reason: ${approvalComment}` : ''}`,
+            recipient: selectedRequest.parentPhone
+          });
+        }
+        
+        setIsSubmittingApproval(false);
+      }, 1000); // Simulate 1 second delay
     }
   };
 
@@ -153,5 +165,6 @@ export const useFacultyLeaves = ({ selectedCourse, selectedBranch }: UseFacultyL
     handleApprovalAction,
     submitApprovalAction,
     getFilterTitle,
+    isSubmittingApproval,
   };
 };
