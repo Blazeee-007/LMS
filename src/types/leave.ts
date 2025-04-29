@@ -35,7 +35,7 @@ export const getLeaveTypeColor = (type: LeaveType) => {
 export const mockLeaveRequests: LeaveRequest[] = [
   {
     id: 1,
-    studentName: "John Doe",
+    studentName: "Durga Prasad",
     studentId: "CS2021001",
     date: "2024-06-10",
     status: "pending",
@@ -52,7 +52,7 @@ export const mockLeaveRequests: LeaveRequest[] = [
   },
   {
     id: 2,
-    studentName: "Jane Smith",
+    studentName: "Arjun Reddy",
     studentId: "CS2021002",
     date: "2024-06-09",
     status: "pending",
@@ -69,7 +69,7 @@ export const mockLeaveRequests: LeaveRequest[] = [
   },
   {
     id: 3,
-    studentName: "David Wilson",
+    studentName: "Priya Sharma",
     studentId: "CS2021003",
     date: "2024-06-08",
     status: "under_review",
@@ -86,7 +86,7 @@ export const mockLeaveRequests: LeaveRequest[] = [
   },
   {
     id: 4,
-    studentName: "Sarah Johnson",
+    studentName: "Ravi Kumar",
     studentId: "CS2021004",
     date: "2024-06-05",
     status: "approved",
@@ -103,7 +103,7 @@ export const mockLeaveRequests: LeaveRequest[] = [
   },
   {
     id: 5,
-    studentName: "Michael Brown",
+    studentName: "Sneha Patel",
     studentId: "CS2021005",
     date: "2024-06-11",
     status: "pending",
@@ -119,3 +119,4 @@ export const mockLeaveRequests: LeaveRequest[] = [
     semester: "5-1"
   }
 ];
+

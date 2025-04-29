@@ -104,16 +104,16 @@ const Login = () => {
             </Button>
             <div className="text-center">
               <p className="text-sm text-[#8E9196]">
-                Student Demo: student@college.edu / password
+                Student Demo: student@college.edu / password (Durga Prasad)
               </p>
               <p className="text-sm text-[#8E9196]">
                 Admin Demo: admin@college.edu / admin
               </p>
               <p className="text-sm text-[#8E9196]">
-                Faculty Demo: faculty@college.edu / faculty
+                Faculty Demo: faculty@college.edu / faculty (Dr. Mohan Kumar)
               </p>
               <p className="text-sm text-[#8E9196]">
-                Faculty 2 Demo: prof@college.edu / professor
+                Faculty 2 Demo: prof@college.edu / professor (Dr. Leela Kumar)
               </p>
             </div>
           </form>

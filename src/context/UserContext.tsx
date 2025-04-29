@@ -47,8 +47,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (email === "student@college.edu" && password === "password") {
         const userData: User = {
           id: "u1",
-          name: "Sai Sasank Vanapalli",
-          email: "saisasank@gmail.com",
+          name: "Durga Prasad",
+          email: "durgaprasad@gmail.com",
           role: "student",
           studentId: "233B1a05C1",
           department: "Computer Science"
@@ -84,8 +84,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else if (email === "faculty@college.edu" && password === "faculty") {
         const facultyData: User = {
           id: "f1",
-          name: "Dr. John Smith",
-          email: "faculty@college.edu",
+          name: "Dr. Mohan Kumar",
+          email: "mohankumar@college.edu",
           role: "faculty",
           facultyId: "FAC001",
           department: "Computer Science"
@@ -103,8 +103,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else if (email === "prof@college.edu" && password === "professor") {
         const professorData: User = {
           id: "f2",
-          name: "Dr. Emily Johnson",
-          email: "prof@college.edu",
+          name: "Dr. Leela Kumar",
+          email: "leelakumar@college.edu",
           role: "faculty",
           facultyId: "FAC002",
           department: "Electronics & Communication"
@@ -174,3 +174,4 @@ export const useUser = () => {
   }
   return context;
 };
+
