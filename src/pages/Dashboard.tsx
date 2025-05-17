@@ -1,4 +1,3 @@
-
 // Import statements should be fixed to avoid conflicts with local declarations
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
@@ -542,7 +541,7 @@ export const Dashboard = () => {
             
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <Badge className={getLeaveTypeColor(selectedLeave.leaveType)} size="lg">
+                <Badge className={getLeaveTypeColor(selectedLeave.leaveType)}>
                   {selectedLeave.leaveType.charAt(0).toUpperCase() + selectedLeave.leaveType.slice(1)} Leave
                 </Badge>
                 <Badge className={getStatusBadgeColor(selectedLeave.status)}>
