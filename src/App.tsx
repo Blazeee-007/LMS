@@ -13,8 +13,6 @@ import Profile from './pages/Profile';
 import LeaveBalance from './pages/LeaveBalance';
 import CalendarView from './pages/CalendarView';
 import NotFound from './pages/NotFound';
-import AttendanceView from './pages/AttendanceView';
-import FacultyDashboard from './pages/FacultyDashboard';
 
 function App() {
   return (
@@ -25,30 +23,25 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             
-            {/* Student Routes */}
+            {/* Faculty Routes */}
             <Route path="/dashboard" element={
-              <ProtectedRoute allowedRoles={["student"]}>
+              <ProtectedRoute allowedRoles={["faculty"]}>
                 <Dashboard />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["faculty"]}>
                 <Profile />
               </ProtectedRoute>
             } />
             <Route path="/leave-balance" element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["faculty"]}>
                 <LeaveBalance />
               </ProtectedRoute>
             } />
             <Route path="/calendar" element={
-              <ProtectedRoute>
+              <ProtectedRoute allowedRoles={["faculty"]}>
                 <CalendarView />
-              </ProtectedRoute>
-            } />
-            <Route path="/attendance" element={
-              <ProtectedRoute allowedRoles={["student"]}>
-                <AttendanceView />
               </ProtectedRoute>
             } />
             
@@ -56,18 +49,6 @@ function App() {
             <Route path="/admin" element={
               <ProtectedRoute requireAdmin={true}>
                 <AdminDashboard />
-              </ProtectedRoute>
-            } />
-            
-            {/* Faculty Routes */}
-            <Route path="/faculty-dashboard" element={
-              <ProtectedRoute allowedRoles={["faculty"]}>
-                <FacultyDashboard />
-              </ProtectedRoute>
-            } />
-            <Route path="/attendance-overview" element={
-              <ProtectedRoute allowedRoles={["faculty"]}>
-                <FacultyDashboard />
               </ProtectedRoute>
             } />
             

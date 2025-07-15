@@ -1,7 +1,7 @@
 
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
-import { ApplicationForm } from "@/components/ApplicationForm";
+import { FacultyApplicationForm } from "@/components/FacultyApplicationForm";
 import { FAQ } from "@/components/FAQ";
 import { ContactSupport } from "@/components/ContactSupport";
 import { MobileFooter } from "@/components/MobileFooter";
@@ -54,7 +54,7 @@ const Index = () => {
       <Header />
       <Hero />
       <main className="container py-8 md:py-12" id="application-form">
-        <ApplicationForm />
+        <FacultyApplicationForm />
       </main>
       <FAQ />
       <ContactSupport />

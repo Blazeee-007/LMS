@@ -28,7 +28,7 @@ import {
 import { format, parseISO, isAfter, isBefore, isToday, differenceInDays } from 'date-fns';
 import { LeaveCalendarPreview } from '@/components/LeaveCalendarPreview';
 import { useToast } from '@/hooks/use-toast';
-import { ApplicationForm } from '@/components/ApplicationForm';
+
 import { Input } from '@/components/ui/input';
 import { 
   Dialog,
@@ -503,10 +503,10 @@ export const Dashboard = () => {
                   <Button 
                     variant="outline" 
                     className="flex flex-col h-24 hover:bg-primary hover:text-white transition-colors" 
-                    onClick={() => navigate('/attendance')}
+                    onClick={handleApplyLeave}
                   >
-                    <CheckCircle className="h-5 w-5 mb-1" />
-                    <span className="text-sm">Attendance</span>
+                    <PlusCircle className="h-5 w-5 mb-1" />
+                    <span className="text-sm">Apply Leave</span>
                   </Button>
                 </div>
               </CardContent>
@@ -525,7 +525,18 @@ export const Dashboard = () => {
               Fill in the details below to submit your leave request
             </DialogDescription>
           </DialogHeader>
-          <ApplicationForm />
+          <div className="p-4 text-center">
+            <p>Please go to the homepage to submit a new leave application.</p>
+            <Button 
+              onClick={() => {
+                setIsApplying(false);
+                navigate('/');
+              }}
+              className="mt-2"
+            >
+              Go to Application Form
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 

@@ -7,7 +7,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: "admin" | "student" | "faculty";
+  role: "admin" | "faculty";
   studentId?: string;
   department?: string;
   facultyId?: string;
@@ -44,23 +44,22 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       // Mock authentication - in a real app, this would be an API call
-      if (email === "student@college.edu" && password === "password") {
-        const userData: User = {
-          id: "u1",
-          name: "Durga Prasad",
-          email: "durgaprasad@gmail.com",
-          role: "student",
-          studentId: "233B1a05C1",
+      if (email === "faculty@college.edu" && password === "faculty") {
+        const facultyData: User = {
+          id: "f1",
+          name: "Dr. Mohan Kumar",
+          email: "mohankumar@college.edu",
+          role: "faculty",
+          facultyId: "FAC001",
           department: "Computer Science"
         };
         
-        // Store user in localStorage and context
-        localStorage.setItem("user", JSON.stringify(userData));
-        setUser(userData);
+        localStorage.setItem("user", JSON.stringify(facultyData));
+        setUser(facultyData);
         
         toast({
-          title: "Login Successful",
-          description: "Welcome back, " + userData.name,
+          title: "Faculty Login Successful",
+          description: "Welcome back, " + facultyData.name,
         });
         
         navigate("/dashboard");
@@ -81,44 +80,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
         
         navigate("/admin");
-      } else if (email === "faculty@college.edu" && password === "faculty") {
-        const facultyData: User = {
-          id: "f1",
-          name: "Dr. Mohan Kumar",
-          email: "mohankumar@college.edu",
-          role: "faculty",
-          facultyId: "FAC001",
-          department: "Computer Science"
-        };
-        
-        localStorage.setItem("user", JSON.stringify(facultyData));
-        setUser(facultyData);
-        
-        toast({
-          title: "Faculty Login Successful",
-          description: "Welcome back, " + facultyData.name,
-        });
-        
-        navigate("/faculty-dashboard");
-      } else if (email === "prof@college.edu" && password === "professor") {
-        const professorData: User = {
-          id: "f2",
-          name: "Dr. Leela Kumar",
-          email: "leelakumar@college.edu",
-          role: "faculty",
-          facultyId: "FAC002",
-          department: "Electronics & Communication"
-        };
-        
-        localStorage.setItem("user", JSON.stringify(professorData));
-        setUser(professorData);
-        
-        toast({
-          title: "Faculty Login Successful",
-          description: "Welcome back, " + professorData.name,
-        });
-        
-        navigate("/faculty-dashboard");
       } else {
         toast({
           title: "Login Failed",

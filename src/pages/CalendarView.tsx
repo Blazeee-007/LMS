@@ -1,6 +1,6 @@
 
 import { Header } from "@/components/Header";
-import { AcademicCalendar } from "@/components/AcademicCalendar";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -102,7 +102,12 @@ const CalendarView = () => {
           </div>
           
           <TabsContent value="calendar" className="mt-6">
-            <AcademicCalendar />
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-semibold mb-4">Faculty Leave Calendar</h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Academic calendar integration for faculty leave management will be available soon.
+          </p>
+        </div>
           </TabsContent>
           
           <TabsContent value="conflicts" className="mt-6">

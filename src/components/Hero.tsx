@@ -39,14 +39,14 @@ export const Hero = () => {
             className="text-4xl md:text-5xl font-bold leading-tight text-[#1A1F2C] dark:text-gray-100"
             variants={fadeIn}
           >
-            Student Leave Application Portal
+            Faculty Leave Management Portal
           </motion.h1>
           <motion.div variants={fadeIn}>
             <p className="text-xl text-gray-700 dark:text-gray-300">
-              Submit your leave requests quickly and securely. We understand your needs need prompt attention.
+              Submit and manage your leave requests efficiently. Streamlined process for faculty members.
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-              Track your application status, view leave balance, and manage your profile all in one place.
+              Track application status, view leave balance, and manage your academic schedule seamlessly.
             </p>
           </motion.div>
           <motion.div 
@@ -84,8 +84,8 @@ export const Hero = () => {
                 <p className="text-sm text-gray-600 dark:text-gray-400">Track your application instantly</p>
               </div>
               <div className="bg-white/50 dark:bg-gray-800/50 p-4 rounded-lg shadow-sm">
-                <h3 className="font-bold text-lg">Balance Tracking</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Monitor your available leave days</p>
+                <h3 className="font-bold text-lg">Academic Integration</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Coordinate with academic schedules</p>
               </div>
             </div>
           </motion.div>

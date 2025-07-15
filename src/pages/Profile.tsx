@@ -47,10 +47,10 @@ const Profile = () => {
                       <label className="text-sm font-medium text-gray-700">Full Name</label>
                       <p className="mt-1 text-gray-900 font-medium">{user?.name}</p>
                     </div>
-                    {user?.studentId && (
+                    {user?.facultyId && (
                       <div>
-                        <label className="text-sm font-medium text-gray-700">Student ID</label>
-                        <p className="mt-1 text-gray-900 font-medium">{user.studentId}</p>
+                        <label className="text-sm font-medium text-gray-700">Faculty ID</label>
+                        <p className="mt-1 text-gray-900 font-medium">{user.facultyId}</p>
                       </div>
                     )}
                     <div>
@@ -75,24 +75,24 @@ const Profile = () => {
               </CardContent>
             </Card>
 
-            {user?.role === "student" && (
+            {user?.role === "faculty" && (
               <Card className="shadow-lg border-t-4 border-t-primary/80">
                 <CardHeader>
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-primary" />
-                    <CardTitle>Parent/Guardian Information</CardTitle>
+                    <CardTitle>Emergency Contact Information</CardTitle>
                   </div>
-                  <CardDescription>Parent or guardian contact details</CardDescription>
+                  <CardDescription>Emergency contact details for faculty</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div>
-                        <label className="text-sm font-medium text-gray-700">Father's Name</label>
-                        <p className="mt-1 text-gray-900 font-medium">Srinivasu Vanapalli</p>
+                        <label className="text-sm font-medium text-gray-700">Emergency Contact Name</label>
+                        <p className="mt-1 text-gray-900 font-medium">Spouse/Family Member</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700">Father's Mobile</label>
+                        <label className="text-sm font-medium text-gray-700">Emergency Contact Mobile</label>
                         <div className="flex items-center gap-2 mt-1">
                           <Phone className="h-4 w-4 text-primary" />
                           <p className="text-gray-900 font-medium">+91 9908910423</p>
@@ -101,14 +101,14 @@ const Profile = () => {
                     </div>
                     <div className="space-y-4">
                       <div>
-                        <label className="text-sm font-medium text-gray-700">Mother's Name</label>
-                        <p className="mt-1 text-gray-900 font-medium">Dhana Lakshmi Vanapalli</p>
+                        <label className="text-sm font-medium text-gray-700">Relationship</label>
+                        <p className="mt-1 text-gray-900 font-medium">Spouse</p>
                       </div>
                       <div>
-                        <label className="text-sm font-medium text-gray-700">Mother's Mobile</label>
+                        <label className="text-sm font-medium text-gray-700">Work Extension</label>
                         <div className="flex items-center gap-2 mt-1">
                           <Phone className="h-4 w-4 text-primary" />
-                          <p className="text-gray-900 font-medium">+91 9398844240</p>
+                          <p className="text-gray-900 font-medium">Ext: 245</p>
                         </div>
                       </div>
                     </div>

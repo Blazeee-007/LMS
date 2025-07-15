@@ -3,8 +3,9 @@ export type LeaveType = "medical" | "personal" | "academic" | "emergency";
 
 export interface LeaveRequest {
   id: number;
-  studentName: string;
-  studentId: string;
+  facultyName: string;
+  facultyId: string;
+  employeeId: string;
   date: string;
   status: StatusType;
   title: string;
@@ -12,14 +13,14 @@ export interface LeaveRequest {
   leaveType: LeaveType;
   fromDate: string;
   toDate: string;
-  course: string;
-  courseId?: string;
-  branch: string;
-  branchId?: string;
-  semester: string;
+  department: string;
+  designation: string;
+  workAllocation?: string;
+  substituteArranged?: boolean;
+  substituteFaculty?: string;
   attachments?: string[];
-  parentNotified?: boolean;
-  parentPhone?: string;
+  emailNotification?: boolean;
+  adminApprovalRequired?: boolean;
 }
 
 export const getLeaveTypeColor = (type: LeaveType) => {
@@ -35,89 +36,101 @@ export const getLeaveTypeColor = (type: LeaveType) => {
 export const mockLeaveRequests: LeaveRequest[] = [
   {
     id: 1,
-    studentName: "Durga Prasad",
-    studentId: "CS2021001",
+    facultyName: "Dr. Rajesh Kumar",
+    facultyId: "FAC001",
+    employeeId: "EMP2021001",
     date: "2024-06-10",
     status: "pending",
     title: "Medical Leave Request",
-    reason: "Fever and body pain",
+    reason: "Surgery recovery period",
     leaveType: "medical",
     fromDate: "2024-06-12",
-    toDate: "2024-06-14",
-    course: "Data Structures",
-    courseId: "cse201",
-    branch: "Computer Science (CSE)",
-    branchId: "cse",
-    semester: "5-1",
-    parentNotified: true,
-    parentPhone: "9876543210"
+    toDate: "2024-06-20",
+    department: "Computer Science",
+    designation: "Associate Professor",
+    workAllocation: "Data Structures, Algorithms",
+    substituteArranged: true,
+    substituteFaculty: "Dr. Priya Sharma",
+    emailNotification: true,
+    adminApprovalRequired: true
   },
   {
     id: 2,
-    studentName: "Arjun Reddy",
-    studentId: "CS2021002",
+    facultyName: "Dr. Anjali Verma",
+    facultyId: "FAC002",
+    employeeId: "EMP2021002",
     date: "2024-06-09",
     status: "pending",
-    title: "Family Function",
-    reason: "Sister's wedding",
-    leaveType: "personal",
+    title: "Conference Attendance",
+    reason: "International Conference on Machine Learning",
+    leaveType: "academic",
     fromDate: "2024-06-15",
     toDate: "2024-06-18",
-    course: "Database Management",
-    courseId: "cse301",
-    branch: "Computer Science (CSE)",
-    branchId: "cse",
-    semester: "5-1"
+    department: "Computer Science",
+    designation: "Assistant Professor",
+    workAllocation: "Machine Learning, AI",
+    substituteArranged: true,
+    substituteFaculty: "Dr. Mohan Kumar",
+    emailNotification: true,
+    adminApprovalRequired: false
   },
   {
     id: 3,
-    studentName: "Priya Sharma",
-    studentId: "CS2021003",
+    facultyName: "Prof. Suresh Reddy",
+    facultyId: "FAC003",
+    employeeId: "EMP2021003",
     date: "2024-06-08",
     status: "under_review",
-    title: "Conference Participation",
-    reason: "Selected to present paper at national level conference",
+    title: "Research Sabbatical",
+    reason: "Visiting researcher at IIT Delhi",
     leaveType: "academic",
-    fromDate: "2024-06-20",
-    toDate: "2024-06-22",
-    course: "Basic Electronics",
-    courseId: "ece101",
-    branch: "Electronics & Communication (ECE)",
-    branchId: "ece",
-    semester: "5-1"
+    fromDate: "2024-07-01",
+    toDate: "2024-12-31",
+    department: "Electronics & Communication",
+    designation: "Professor",
+    workAllocation: "Signal Processing, Communications",
+    substituteArranged: false,
+    emailNotification: true,
+    adminApprovalRequired: true
   },
   {
     id: 4,
-    studentName: "Ravi Kumar",
-    studentId: "CS2021004",
+    facultyName: "Dr. Kavitha Nair",
+    facultyId: "FAC004",
+    employeeId: "EMP2021004",
     date: "2024-06-05",
     status: "approved",
-    title: "Medical Emergency",
-    reason: "Hospitalization due to accident",
-    leaveType: "medical",
+    title: "Family Emergency",
+    reason: "Father's hospitalization",
+    leaveType: "emergency",
     fromDate: "2024-06-06",
-    toDate: "2024-06-12",
-    course: "Engineering Mechanics",
-    courseId: "mech101",
-    branch: "Mechanical Engineering (MECH)",
-    branchId: "mech",
-    semester: "5-1"
+    toDate: "2024-06-10",
+    department: "Mechanical Engineering",
+    designation: "Assistant Professor",
+    workAllocation: "Thermodynamics, Heat Transfer",
+    substituteArranged: true,
+    substituteFaculty: "Dr. Ramesh Babu",
+    emailNotification: true,
+    adminApprovalRequired: false
   },
   {
     id: 5,
-    studentName: "Sneha Patel",
-    studentId: "CS2021005",
+    facultyName: "Dr. Vikram Singh",
+    facultyId: "FAC005",
+    employeeId: "EMP2021005",
     date: "2024-06-11",
     status: "pending",
-    title: "Family Emergency",
-    reason: "Grandmother hospitalized",
-    leaveType: "emergency",
-    fromDate: "2024-06-12",
-    toDate: "2024-06-15",
-    course: "Data Structures",
-    courseId: "cse201",
-    branch: "Computer Science (CSE)",
-    branchId: "cse",
-    semester: "5-1"
+    title: "Personal Leave",
+    reason: "Son's wedding preparations",
+    leaveType: "personal",
+    fromDate: "2024-06-25",
+    toDate: "2024-06-30",
+    department: "Civil Engineering",
+    designation: "Associate Professor",
+    workAllocation: "Structural Engineering, Design",
+    substituteArranged: true,
+    substituteFaculty: "Dr. Lakshmi Devi",
+    emailNotification: true,
+    adminApprovalRequired: false
   }
 ];
