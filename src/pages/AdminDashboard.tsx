@@ -7,6 +7,7 @@ import {
   FileText, CheckCircle, X, Filter, Users, Clock, AlertCircle,
   Eye, BarChart3, Settings, Printer
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -44,14 +45,15 @@ interface Application {
   leaveType: string;
   fromDate: string;
   toDate: string;
-  course: string;
-  branch: string;
-  semester: string;
+  facultyName: string;
+  department: string;
+  facultyId: string;
   attachments?: string[];
 }
 
 const AdminDashboard = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -70,9 +72,9 @@ const AdminDashboard = () => {
       leaveType: "emergency",
       fromDate: "2024-02-21",
       toDate: "2024-02-23",
-      course: "B.Tech",
-      branch: "Computer Science (CSE)",
-      semester: "3 Year - 1 Semester"
+      facultyName: "Dr. Mohan Kumar",
+      department: "Computer Science",
+      facultyId: "FAC001"
     },
     {
       id: 2,
@@ -83,9 +85,9 @@ const AdminDashboard = () => {
       leaveType: "medical",
       fromDate: "2024-02-16",
       toDate: "2024-02-18",
-      course: "Degree",
-      branch: "BCA",
-      semester: "2 Year - 2 Semester",
+      facultyName: "Dr. Sarah Johnson",
+      department: "Mathematics",
+      facultyId: "FAC002",
       attachments: ["medical_certificate.pdf"]
     },
     {
@@ -97,36 +99,36 @@ const AdminDashboard = () => {
       leaveType: "academic",
       fromDate: "2024-01-15",
       toDate: "2024-01-18",
-      course: "B.Tech",
-      branch: "Computer Science & AI/ML (CSE-AIML)",
-      semester: "4 Year - 1 Semester"
+      facultyName: "Prof. Michael Chen",
+      department: "Physics",
+      facultyId: "FAC003"
     },
     {
       id: 4,
       date: "2024-03-05",
       status: "under_review",
-      title: "Hackathon Participation",
-      reason: "Participating in national level hackathon",
+      title: "Research Collaboration",
+      reason: "Collaborative research project with partner university",
       leaveType: "academic",
       fromDate: "2024-03-10",
       toDate: "2024-03-12",
-      course: "B.Tech",
-      branch: "Computer Science (CSE)",
-      semester: "3 Year - 2 Semester",
-      attachments: ["invitation_letter.pdf", "registration_confirmation.pdf"]
+      facultyName: "Dr. Lisa Brown",
+      department: "Chemistry",
+      facultyId: "FAC004",
+      attachments: ["invitation_letter.pdf", "collaboration_agreement.pdf"]
     },
     {
       id: 5,
       date: "2024-04-15",
       status: "needs_info",
       title: "Family Function",
-      reason: "Sister's marriage ceremony",
+      reason: "Daughter's marriage ceremony",
       leaveType: "personal",
       fromDate: "2024-04-20",
       toDate: "2024-04-25",
-      course: "B.Tech",
-      branch: "Electronics & Communication (ECE)",
-      semester: "2 Year - 2 Semester"
+      facultyName: "Prof. Robert Wilson",
+      department: "English Literature",
+      facultyId: "FAC005"
     },
   ];
 
@@ -134,8 +136,9 @@ const AdminDashboard = () => {
     const matchesSearch = 
       app.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       app.reason.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.course.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      app.branch.toLowerCase().includes(searchTerm.toLowerCase());
+      app.facultyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.facultyId.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === "all" || app.status === statusFilter;
     
@@ -333,9 +336,9 @@ const AdminDashboard = () => {
                               <p>{format(parseISO(application.fromDate), 'PPP')} to {format(parseISO(application.toDate), 'PPP')}</p>
                             </div>
                             <div className="grid grid-cols-3 gap-4 text-sm text-gray-600">
-                              <p>Course: {application.course}</p>
-                              <p>Branch: {application.branch}</p>
-                              <p>Semester: {application.semester}</p>
+                              <p>Faculty: {application.facultyName}</p>
+                              <p>Department: {application.department}</p>
+                              <p>Faculty ID: {application.facultyId}</p>
                             </div>
                             
                             {application.attachments && application.attachments.length > 0 && (
@@ -439,16 +442,16 @@ const AdminDashboard = () => {
                           
                           <div className="grid grid-cols-3 gap-4">
                             <div>
-                              <h3 className="font-semibold">Course</h3>
-                              <p className="text-gray-700">{selectedApplication.course}</p>
+                              <h3 className="font-semibold">Faculty Name</h3>
+                              <p className="text-gray-700">{selectedApplication.facultyName}</p>
                             </div>
                             <div>
-                              <h3 className="font-semibold">Branch</h3>
-                              <p className="text-gray-700">{selectedApplication.branch}</p>
+                              <h3 className="font-semibold">Department</h3>
+                              <p className="text-gray-700">{selectedApplication.department}</p>
                             </div>
                             <div>
-                              <h3 className="font-semibold">Semester</h3>
-                              <p className="text-gray-700">{selectedApplication.semester}</p>
+                              <h3 className="font-semibold">Faculty ID</h3>
+                              <p className="text-gray-700">{selectedApplication.facultyId}</p>
                             </div>
                           </div>
                           
@@ -520,10 +523,10 @@ const AdminDashboard = () => {
                   <Button 
                     variant="outline" 
                     className="flex flex-col h-24 hover:bg-primary hover:text-white transition-colors"
-                    onClick={() => {}}
+                    onClick={() => navigate('/admin/manage-users')}
                   >
                     <Users className="h-5 w-5 mb-1" />
-                    <span className="text-sm">Faculty</span>
+                    <span className="text-sm">Manage Users</span>
                   </Button>
                   <Button 
                     variant="outline" 

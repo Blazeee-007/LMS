@@ -21,13 +21,13 @@ const CalendarView = () => {
       id: 1,
       date: "May 25, 2024",
       event: "Mid-term Examination",
-      affectedStudents: 5,
+      affectedFaculty: 5,
     },
     {
       id: 2,
       date: "Jun 10, 2024",
       event: "Project Presentation",
-      affectedStudents: 3,
+      affectedFaculty: 3,
     },
   ];
 
@@ -134,15 +134,15 @@ const CalendarView = () => {
                     <CardContent>
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-700">Affected Students:</span>
-                          <span className="font-semibold">{conflict.affectedStudents}</span>
+                          <span className="text-gray-700">Affected Faculty:</span>
+                          <span className="font-semibold">{conflict.affectedFaculty}</span>
                         </div>
                         <div className="text-sm text-gray-600">
-                          Students with approved leave during this event will need to be notified.
+                          Faculty with approved leave during this event will need to be notified.
                         </div>
                         <div className="mt-4 flex justify-end gap-2">
                           <Button variant="outline" size="sm">
-                            View Students
+                            View Faculty
                           </Button>
                           <Button variant="default" size="sm">
                             Send Notification
@@ -168,7 +168,7 @@ const CalendarView = () => {
                 <CardHeader>
                   <CardTitle>Department Leave Statistics</CardTitle>
                   <CardDescription>
-                    Current student leave distribution by department
+                    Current faculty leave distribution by department
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -177,7 +177,7 @@ const CalendarView = () => {
                       <div key={index} className="space-y-2">
                         <div className="flex justify-between">
                           <span className="font-medium">{dept.name}</span>
-                          <span>{dept.onLeave} / {dept.total} students ({dept.percentage}%)</span>
+                          <span>{dept.onLeave} / {dept.total} faculty ({dept.percentage}%)</span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2.5">
                           <div 

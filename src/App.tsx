@@ -9,6 +9,7 @@ import Index from './pages/Index';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import ManageUsers from './pages/ManageUsers';
 import Profile from './pages/Profile';
 import LeaveBalance from './pages/LeaveBalance';
 import CalendarView from './pages/CalendarView';
@@ -49,6 +50,11 @@ function App() {
             <Route path="/admin" element={
               <ProtectedRoute requireAdmin={true}>
                 <AdminDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/manage-users" element={
+              <ProtectedRoute requireAdmin={true}>
+                <ManageUsers />
               </ProtectedRoute>
             } />
             

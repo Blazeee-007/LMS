@@ -20,7 +20,7 @@ type LeaveBalanceType = {
   color: string;
 };
 
-const studentLeaveBalances: LeaveBalanceType[] = [
+const facultyLeaveBalances: LeaveBalanceType[] = [
   { type: "medical", used: 2, total: 10, color: "bg-blue-500" },
   { type: "personal", used: 3, total: 5, color: "bg-green-500" },
   { type: "academic", used: 1, total: 3, color: "bg-purple-500" },
@@ -245,7 +245,7 @@ const LeaveBalance = () => {
           <TabsContent value="balance" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-2">
-                <LeaveBalanceCard balances={studentLeaveBalances} />
+                <LeaveBalanceCard balances={facultyLeaveBalances} />
               </div>
               
               <Card className="hover:shadow-md transition-shadow">
@@ -504,7 +504,7 @@ const LeaveBalance = () => {
                       <div>
                         <p className="text-sm text-gray-500 mb-2 font-medium">Usage by Type</p>
                         <div className="space-y-4">
-                          {studentLeaveBalances.map((balance) => (
+                          {facultyLeaveBalances.map((balance) => (
                             <div key={balance.type} className="space-y-1">
                               <div className="flex justify-between text-sm">
                                 <span className="font-medium">{getTypeLabel(balance.type)}</span>
