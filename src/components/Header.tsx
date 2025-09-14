@@ -41,7 +41,6 @@ export const Header = () => {
   // Function to determine home page based on role
   const getHomePage = () => {
     if (isAdmin) return "/admin";
-    if (isFaculty) return "/faculty-dashboard";
     return "/dashboard";
   };
 
@@ -65,28 +64,11 @@ export const Header = () => {
                   <span>Dashboard</span>
                 </Link>
                 <Link 
-                  to="/users" 
-                  className={`flex items-center gap-1 ${isActive("/users") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
+                  to="/admin/manage-users" 
+                  className={`flex items-center gap-1 ${isActive("/admin/manage-users") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   <Users className="h-4 w-4" />
                   <span>Manage Users</span>
-                </Link>
-              </>
-            ) : isFaculty ? (
-              <>
-                <Link 
-                  to="/faculty-dashboard" 
-                  className={`flex items-center gap-1 ${isActive("/faculty-dashboard") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
-                >
-                  <Home className="h-4 w-4" />
-                  <span>Dashboard</span>
-                </Link>
-                <Link 
-                  to="/attendance-overview" 
-                  className={`flex items-center gap-1 ${isActive("/attendance-overview") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
-                >
-                  <CheckSquare className="h-4 w-4" />
-                  <span>Attendance</span>
                 </Link>
               </>
             ) : (
@@ -111,13 +93,6 @@ export const Header = () => {
                 >
                   <Calendar className="h-4 w-4" />
                   <span>Calendar</span>
-                </Link>
-                <Link 
-                  to="/attendance" 
-                  className={`flex items-center gap-1 ${isActive("/attendance") ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
-                >
-                  <CheckSquare className="h-4 w-4" />
-                  <span>Attendance</span>
                 </Link>
               </>
             )}
